@@ -10,10 +10,10 @@ import com.dto.LoginDTO;
 import com.service.UserService;
 
 @RestController
-public class Login {
+public class LoginController {
     private final UserService userService;
 
-    public Login(UserService userService) {
+    public LoginController(UserService userService) {
         this.userService = userService;
     }
 
