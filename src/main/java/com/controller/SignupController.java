@@ -11,12 +11,12 @@ import com.service.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class Signup {
+public class SignupController {
     private final UserService userService;
 
     private final PasswordEncoder passwordEncoder;
 
-    public Signup(UserService userService, PasswordEncoder passwordEncoder) {
+    public SignupController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
