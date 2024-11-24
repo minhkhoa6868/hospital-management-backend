@@ -20,6 +20,10 @@ public class Patients{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String PCode;
 
+    public String getPCode() {
+        return PCode;
+    }
+
     @Column(nullable = false, name = "First Name")
     private String first_name;
 
@@ -39,4 +43,9 @@ public class Patients{
 
     @Column(nullable = false, name = "Patient Type")
     private PatientType patient_type;
+
+    public PatientType getPatientType() {
+        return patient_type;
+    }
+    
 }
