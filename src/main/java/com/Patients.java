@@ -20,23 +20,23 @@ public class Patients{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String PCode;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "First Name")
     private String first_name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "Last Name")
     private String last_name;
 
     @Column(nullable = false)
-    private Boolean gender;
+    private Boolean Gender;
 
     @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
+    @Column(nullable = false, name = "Date of Birth")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private Date dob;
+    private Date DoB;
 
     @Column(nullable = false)
-    private String address;
+    private String Address;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "Patient Type")
     private PatientType patient_type;
 }
