@@ -34,6 +34,7 @@ public class Patients{
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date dob;
 
+    @Column(nullable = false)
     private String address;
 
     @Column(nullable = false)
