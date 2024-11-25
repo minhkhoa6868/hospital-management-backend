@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EmployeeDTO {
-    private long Ecode;
+    private Long Ecode;
     private String firstName;
     private String lastName;
     private LocalDate DOB;
@@ -24,9 +24,14 @@ public class EmployeeDTO {
     private long speDegreeYear;
     private String employeeType;
     private List<String> phoneNumbers;
+    private String deptTitle;
+
+    public EmployeeDTO() {
+        // Default constructor for deserialization
+    }
 
     public EmployeeDTO(Employee employee) {
-         this.Ecode = employee.getEcode();
+        this.Ecode = employee.getEcode();
         this.firstName = employee.getFirstName();
         this.lastName = employee.getLastName();
         this.DOB = employee.getDOB();
@@ -38,8 +43,20 @@ public class EmployeeDTO {
         this.employeeType = employee.getEmployeeType();
         
         // Convert the phone_numbers list to a list of phone numbers (strings)
-        this.phoneNumbers = employee.getPhone_numbers().stream()
+        if (employee.getPhone_numbers() == null) {
+            this.phoneNumbers = null;
+        } else {
+            this.phoneNumbers = employee.getPhone_numbers().stream()
                                       .map(phone -> phone.getPhoneNumber())
                                       .collect(Collectors.toList());
+        }
+        if (employee.getDepartment() == null) {
+            this.deptTitle = null;
+        }
+
+        else {
+            this.deptTitle = employee.getDepartment().getTitle();
+        }
     }
+
 }

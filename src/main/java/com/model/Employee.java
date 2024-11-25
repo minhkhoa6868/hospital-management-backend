@@ -10,7 +10,9 @@ import lombok.Setter;
 import jakarta.persistence.GenerationType;
 
 @Entity
-@Table(name = "Employee")
+@Table(name = "Employee", uniqueConstraints = {
+    @UniqueConstraint(columnNames = "Ecode")
+})
 @Getter
 @Setter
 public class Employee {
@@ -48,4 +50,10 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Employee_phone> phone_numbers = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "Dno", referencedColumnName = "Dcode", nullable = true)
+    private Department department;
+
+    public Employee() {}
 }

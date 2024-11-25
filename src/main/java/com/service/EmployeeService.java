@@ -1,11 +1,14 @@
 package com.service;
 
 import com.dto.EmployeeDTO;
+import com.model.Department;
 import com.model.Employee;
 import com.model.Employee_phone;
+import com.repository.DepartmentRepository;
 import com.repository.EmployeeRepository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -15,15 +18,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository) {
         this.employeeRepository = employeeRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     // handle get all employees
     @Transactional
     public List<EmployeeDTO> handleGetAllEmployees() {
-        List<Employee> employees = employeeRepository.findAllEmployees();
+        List<Employee> employees = employeeRepository.findAll();
 
         return employees.stream().map(EmployeeDTO::new).toList();
     }
@@ -54,21 +59,52 @@ public class EmployeeService {
 
     // handle create employee
     @Transactional
-    public Employee handleCreateEmployee(Employee employee) {
-        Employee newEmployee = this.findEmployee(employee.getEcode());
+    public Employee handleCreateEmployee(EmployeeDTO employeeDTO) {
+        System.out.println(employeeDTO);
 
-        if (newEmployee != null) {
-            throw new RuntimeException("Employee already exists");
-        }
+        Employee newEmployee = new Employee();
 
-        // Associate phone numbers with the employee
-        if (employee.getPhone_numbers() != null) {
-            for (Employee_phone phone : employee.getPhone_numbers()) {
-                phone.setEmployee(employee); // Set the relationship
+        this.employeeRepository.disableForeignKeyChecks();
+
+        newEmployee.setFirstName(employeeDTO.getFirstName());
+        newEmployee.setLastName(employeeDTO.getLastName());
+        newEmployee.setDOB(employeeDTO.getDOB());
+        newEmployee.setGender(employeeDTO.getGender());
+        newEmployee.setStartDate(employeeDTO.getStartDate());
+        newEmployee.setAddress(employeeDTO.getAddress());
+        newEmployee.setSpeName(employeeDTO.getSpeName());
+        newEmployee.setSpeDegreeYear(employeeDTO.getSpeDegreeYear());
+        newEmployee.setEmployeeType(employeeDTO.getEmployeeType());
+
+        // handle create phone number
+        if (employeeDTO.getPhoneNumbers() != null && !employeeDTO.getPhoneNumbers().isEmpty()) {
+            for (String phoneNumber : employeeDTO.getPhoneNumbers()) {
+                // Avoid duplicates or null values
+                if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
+                    Employee_phone phone = new Employee_phone();
+                    phone.setPhoneNumber(phoneNumber.trim());
+                    phone.setEmployee(newEmployee); // Establish relationship
+                    newEmployee.getPhone_numbers().add(phone); // Add to employee
+                }
             }
         }
 
-        return employeeRepository.save(employee);
+        // handle reference to department
+        if (employeeDTO.getDeptTitle() != null && !employeeDTO.getDeptTitle().isEmpty()) {
+            Optional<Department> targetDepartment = this.departmentRepository.findByTitle(employeeDTO.getDeptTitle());
+
+            if (targetDepartment.isPresent()) {
+                newEmployee.setDepartment(targetDepartment.get());
+            }
+
+            else {
+                throw new RuntimeException("Department not found");
+            }
+        }
+
+        this.employeeRepository.enableForeignKeyChecks();
+
+        return employeeRepository.save(newEmployee);
     }
 
     // handle update employee
@@ -88,6 +124,40 @@ public class EmployeeService {
         updatedEmployee.setSpeName(employeeDTO.getSpeName());
         updatedEmployee.setSpeDegreeYear(employeeDTO.getSpeDegreeYear());
         updatedEmployee.setEmployeeType(employeeDTO.getEmployeeType());
+
+        // Handle phone numbers
+        // Step 1: Remove existing phone numbers explicitly
+        Set<Employee_phone> existingPhones = updatedEmployee.getPhone_numbers();
+        if (existingPhones != null) {
+            existingPhones.forEach(phone -> phone.setEmployee(null)); // Break relationship
+            existingPhones.clear();
+        }
+
+        // Step 2: Add new phone numbers from DTO
+        if (employeeDTO.getPhoneNumbers() != null && !employeeDTO.getPhoneNumbers().isEmpty()) {
+            for (String phoneNumber : employeeDTO.getPhoneNumbers()) {
+                // Avoid duplicates or null values
+                if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
+                    Employee_phone phone = new Employee_phone();
+                    phone.setPhoneNumber(phoneNumber.trim());
+                    phone.setEmployee(updatedEmployee); // Establish relationship
+                    updatedEmployee.getPhone_numbers().add(phone); // Add to employee
+                }
+            }
+        }
+
+        // handle reference to department
+        if (employeeDTO.getDeptTitle() != null && !employeeDTO.getDeptTitle().isEmpty()) {
+            Optional<Department> targetDepartment = this.departmentRepository.findByTitle(employeeDTO.getDeptTitle());
+
+            if (targetDepartment.isPresent()) {
+                updatedEmployee.setDepartment(targetDepartment.get());
+            }
+
+            else {
+                throw new RuntimeException("Department not found");
+            }
+        }
 
         Employee savedEmployee = employeeRepository.save(updatedEmployee);
 
