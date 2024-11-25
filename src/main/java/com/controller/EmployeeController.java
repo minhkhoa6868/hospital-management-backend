@@ -37,16 +37,19 @@ public class EmployeeController {
     @GetMapping("{code}")
     public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable long code) {
         EmployeeDTO employeeDTO = employeeService.handleGetOneEmployee(code);
+
         return ResponseEntity.ok(employeeDTO);
     }
 
     // handle create employee
     @PostMapping
-    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody Employee employee) {
-        Employee newEmployee = employeeService.handleCreateEmployee(employee);
+    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        System.out.println(employeeDTO.getFirstName());
+        Employee newEmployee = employeeService.handleCreateEmployee(employeeDTO);
 
-        EmployeeDTO employeeDTO = new EmployeeDTO(newEmployee);
-        return ResponseEntity.status(HttpStatus.CREATED).body(employeeDTO);
+        EmployeeDTO newEmployeeDTO = new EmployeeDTO(newEmployee);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(newEmployeeDTO);
     }
 
     // handle update employee
