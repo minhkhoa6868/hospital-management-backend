@@ -3,6 +3,11 @@ import java.sql.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -11,39 +16,30 @@ import jakarta.presistence.*;
 @Entity
 @Table(name="Medication")
 public class Medication{
-
-    public enum MedStatus {
-        AVAILABLE,
-        OUT_OF_STOCK,
-        EXPIRED,
-        RESERVED,
-        DISPENSED,
-        PENDING_RESTOCK
-    }
     
     @Id
     @PrimaryKeyJoinColumn
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String MCode;
+    private Integer MCode;
 
     @Column(nullable = false)
     private String Name;
 
     @Column(nullable = false)
-    private double Price;
+    private Integer Price;
 
     @Column(nullable = false)
-    private Long Quantity;
+    private Integer Quantity;
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false, name = "Expiration Date")
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private Date Expiration_Date;
+    private Date ExpirationDate;
 
-    @Column(nullable = false)
-    private MedStatus Status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "m_status", nullable = false, columnDefinition = "ENUM('AVAILABLE', 'OUT_OF_STOCK', 'EXPIRED')")
+    private MedicaionStatus Status;
 
-    public MedStatus getStatus() {
+    public MedicationStatus getStatus() {
         return Status;
     }
 }
