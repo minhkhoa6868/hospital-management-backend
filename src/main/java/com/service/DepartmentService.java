@@ -11,6 +11,7 @@ import com.dto.EmployeeDTO;
 import com.model.Department;
 import com.model.Employee;
 import com.repository.DepartmentRepository;
+import com.exception.NotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -48,7 +49,7 @@ public class DepartmentService {
         Department getDepartment = findDepartment(dcode);
 
         if (getDepartment == null) {
-            throw new RuntimeException("Department not found");
+            throw new NotFoundException("Department not found");
         }
 
         return new DepartmentDTO(getDepartment);
@@ -57,7 +58,7 @@ public class DepartmentService {
     // handle create department
     public DepartmentDTO handleCreateDepartment(Department department) {
         if (this.departmentRepository.findByTitle(department.getTitle()).isPresent()) {
-            throw new RuntimeException("Department already exists");
+            throw new NotFoundException("Department already exists");
         }
 
         Department newDepartment = new Department();
@@ -72,7 +73,7 @@ public class DepartmentService {
             Employee dean = this.employeeService.findEmployee(department.getDean().getEcode());
 
             if (dean == null) {
-                throw new RuntimeException("Dean not found");
+                throw new NotFoundException("Dean not found");
             }
 
             newDepartment.setDean(dean);
@@ -91,13 +92,13 @@ public class DepartmentService {
         Department updatedDepartment = findDepartment(dcode);
 
         if (updatedDepartment == null) {
-            throw new RuntimeException("Department not found");
+            throw new NotFoundException("Department not found");
         }
 
         Employee dean = this.employeeService.findEmployee(department.getDean().getEcode());
 
         if (this.departmentRepository.findByTitle(department.getTitle()).isPresent()) {
-            throw new RuntimeException("Department already exists");
+            throw new NotFoundException("Department already exists");
         }
 
         if (department.getDean() == null) {
@@ -105,7 +106,7 @@ public class DepartmentService {
         }
 
         if (dean == null) {
-            throw new RuntimeException("Dean not found");
+            throw new NotFoundException("Dean not found");
         }
 
         updatedDepartment.setTitle(department.getTitle());
@@ -126,7 +127,7 @@ public class DepartmentService {
         Department department = findDepartment(dcode);
 
         if (department == null) {
-            throw new RuntimeException("Department not found");
+            throw new NotFoundException("Department not found");
         }
 
         departmentRepository.delete(department);
@@ -137,11 +138,11 @@ public class DepartmentService {
         Department department = findDepartment(dcode);
 
         if (department == null) {
-            throw new RuntimeException("Department not found");
+            throw new NotFoundException("Department not found");
         }
 
         if (department.getDean() == null) {
-            throw new RuntimeException("Dean not found");
+            throw new NotFoundException("Dean not found");
         }
 
         return new EmployeeDTO(department.getDean());
@@ -152,7 +153,7 @@ public class DepartmentService {
         Department department = findDepartment(dcode);
 
         if (department == null) {
-            throw new RuntimeException("Department not found");
+            throw new NotFoundException("Department not found");
         }
 
         return department.getEmployees().stream().map(EmployeeDTO::new).toList();

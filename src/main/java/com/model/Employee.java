@@ -7,11 +7,10 @@ import java.util.Set;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.GenerationType;
 
 @Entity
 @Table(name = "Employee", uniqueConstraints = {
-    @UniqueConstraint(columnNames = "Ecode")
+        @UniqueConstraint(columnNames = "Ecode")
 })
 @Getter
 @Setter
@@ -45,8 +44,9 @@ public class Employee {
     @Column(columnDefinition = "YEAR", nullable = false)
     private long speDegreeYear;
 
-    @Column(columnDefinition = "VARCHAR(10)", nullable = false)
-    private String employeeType;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Employee_type employeeType;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Employee_phone> phone_numbers = new HashSet<>();
@@ -55,5 +55,6 @@ public class Employee {
     @JoinColumn(name = "Dno", referencedColumnName = "Dcode", nullable = true)
     private Department department;
 
-    public Employee() {}
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Examination> examinations = new HashSet<>();
 }
