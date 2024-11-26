@@ -13,17 +13,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.dto.EmployeeDTO;
+import com.dto.ExaminationDTO;
+import com.dto.HospitalizationInformationDTO;
 import com.model.Employee;
 import com.service.EmployeeService;
+import com.service.ExaminationService;
+import com.service.HospitalizationInformationService;
+
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
     private final EmployeeService employeeService;
+    private final HospitalizationInformationService hospitalizationInformationService;
+    private final ExaminationService examinationService;
 
-    public EmployeeController(EmployeeService employeeService) {
+    public EmployeeController(EmployeeService employeeService, 
+                                HospitalizationInformationService hospitalizationInformationService,
+                                ExaminationService examinationService) {
         this.employeeService = employeeService;
+        this.hospitalizationInformationService = hospitalizationInformationService;
+        this.examinationService = examinationService;
     }
 
     // return all employees
@@ -82,5 +94,21 @@ public class EmployeeController {
         List<String> phoneNumbers = employeeService.handleGetAllEmployeePhones(code);
 
         return ResponseEntity.ok(phoneNumbers);
+    }
+
+    // handle get all hospitalization information
+    @GetMapping("/{code}/hospitalization_information")
+    public ResponseEntity<List<HospitalizationInformationDTO>> getAllHospitalizationInformationOfNurse(@PathVariable long code) {
+        List<HospitalizationInformationDTO> hospitalizationInformation = hospitalizationInformationService.handleGetAllHospitalizationInformationOfNurse(code);
+
+        return ResponseEntity.ok(hospitalizationInformation);
+    }
+    
+    // handle get all examination
+    @GetMapping("/{code}/examination")
+    public ResponseEntity<List<ExaminationDTO>> getAllExaminationOfDoctor(@PathVariable long code) {
+        List<ExaminationDTO> examinations = this.examinationService.handleGetAllExaminationOfDoctor(code);
+
+        return ResponseEntity.ok(examinations);
     }
 }

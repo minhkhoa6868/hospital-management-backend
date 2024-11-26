@@ -12,17 +12,17 @@ import lombok.Setter;
 @Setter
 public class DepartmentDTO {
     private String title;
-    private Long dean_code;
+    private EmployeeDTO dean;
     private List<EmployeeDTO> employees;
 
     public DepartmentDTO(Department department) {
         this.title = department.getTitle();
 
         if (department.getDean() == null) {
-            this.dean_code = null;
+            this.dean = null;
         }
         else {
-            this.dean_code = department.getDean().getEcode();
+            this.dean = new EmployeeDTO(department.getDean());
         }
 
         if (department.getEmployees() == null) {

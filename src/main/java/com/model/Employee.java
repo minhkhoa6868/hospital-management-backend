@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,6 +57,11 @@ public class Employee {
     @JoinColumn(name = "Dno", referencedColumnName = "Dcode", nullable = true)
     private Department department;
 
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "examineDoctor", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Examination> examinations = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "takeCareNurse", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<HospitalizationInformation> hospitalizationInformations = new HashSet<>();
 }
