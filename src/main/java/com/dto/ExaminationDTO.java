@@ -14,19 +14,28 @@ public class ExaminationDTO {
     private LocalDate nextDate;
     private int fee;
     private String diagnose;
-    private Long docCode;
+    private Long doctorCode;
+    private String doctorName;
 
     public ExaminationDTO(Examination examination) {
         this.date = examination.getDate();
         this.nextDate = examination.getNextDate();
         this.fee = examination.getFee();
         this.diagnose = examination.getDiagnose();
-        if (examination.getDoctor() == null) {
-            this.docCode = null;
+        if (examination.getExamineDoctor() == null) {
+            this.doctorCode = null;
         }
 
         else {
-            this.docCode = examination.getDoctor().getEcode();
+            this.doctorCode = examination.getExamineDoctor().getEcode();
+        }
+
+        if (examination.getExamineDoctor() == null) {
+            this.doctorName = null;
+        }
+
+        else {
+            this.doctorName = examination.getExamineDoctor().getFirstName() + " " + examination.getExamineDoctor().getLastName();
         }
     }
 }

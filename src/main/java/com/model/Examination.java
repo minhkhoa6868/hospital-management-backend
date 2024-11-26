@@ -29,5 +29,5 @@ public class Examination {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doc_code", referencedColumnName = "Ecode", nullable = true)
-    private Employee doctor;
+    private Employee examineDoctor;
 }

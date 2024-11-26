@@ -8,16 +8,18 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.model.Examination;
+import com.model.HospitalizationInformation;
 
 import jakarta.transaction.Transactional;
 
 @Repository
-public interface ExaminationRepository extends JpaRepository<Examination, Long> {
-    Optional<Examination> findById(long id);
+public interface HospitalizationInformationRepository extends JpaRepository<HospitalizationInformation, Long> {
+    Optional<HospitalizationInformation> findById(Long id);
 
-    @Query(value = "SELECT * FROM Examination e WHERE e.doc_code = :doctorCode", nativeQuery = true)
-    List<Examination> findByDoctorCode(long doctorCode);
+    //List<HospitalizationInformation> findByPatientId(Long patientId);
+
+    @Query(value = "SELECT * FROM Hospitalization_information hi WHERE hi.nurse_code = :nurseCode", nativeQuery = true)
+    List<HospitalizationInformation> findByNurseCode(Long nurseCode);
 
     @Modifying
     @Transactional
