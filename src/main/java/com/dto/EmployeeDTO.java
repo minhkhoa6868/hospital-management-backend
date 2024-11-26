@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.model.Employee;
+import com.model.Employee_type;
 import com.model.Gender;
 
 import lombok.Getter;
@@ -22,9 +23,10 @@ public class EmployeeDTO {
     private String address;
     private String speName;
     private long speDegreeYear;
-    private String employeeType;
+    private Employee_type employeeType;
     private List<String> phoneNumbers;
     private String deptTitle;
+    private List<Long> examinations;
 
     public EmployeeDTO() {
         // Default constructor for deserialization
@@ -41,14 +43,14 @@ public class EmployeeDTO {
         this.speName = employee.getSpeName();
         this.speDegreeYear = employee.getSpeDegreeYear();
         this.employeeType = employee.getEmployeeType();
-        
+
         // Convert the phone_numbers list to a list of phone numbers (strings)
         if (employee.getPhone_numbers() == null) {
             this.phoneNumbers = null;
         } else {
             this.phoneNumbers = employee.getPhone_numbers().stream()
-                                      .map(phone -> phone.getPhoneNumber())
-                                      .collect(Collectors.toList());
+                    .map(phone -> phone.getPhoneNumber())
+                    .collect(Collectors.toList());
         }
         if (employee.getDepartment() == null) {
             this.deptTitle = null;
@@ -56,6 +58,14 @@ public class EmployeeDTO {
 
         else {
             this.deptTitle = employee.getDepartment().getTitle();
+        }
+
+        if (employee.getExaminations() == null) {
+            this.examinations = null;
+        } else {
+            this.examinations = employee.getExaminations().stream()
+                    .map(examination -> examination.getId())
+                    .collect(Collectors.toList());
         }
     }
 

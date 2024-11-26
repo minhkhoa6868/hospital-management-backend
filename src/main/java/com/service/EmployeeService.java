@@ -1,6 +1,7 @@
 package com.service;
 
 import com.dto.EmployeeDTO;
+import com.exception.NotFoundException;
 import com.model.Department;
 import com.model.Employee;
 import com.model.Employee_phone;
@@ -51,7 +52,7 @@ public class EmployeeService {
         Employee employee = this.findEmployee(code);
 
         if (employee == null) {
-            throw new RuntimeException("Employee not found");
+            throw new NotFoundException("Employee not found");
         }
 
         return new EmployeeDTO(employee);
@@ -98,7 +99,7 @@ public class EmployeeService {
             }
 
             else {
-                throw new RuntimeException("Department not found");
+                throw new NotFoundException("Department not found");
             }
         }
 
@@ -113,7 +114,7 @@ public class EmployeeService {
         Employee updatedEmployee = this.findEmployee(code);
 
         if (updatedEmployee == null) {
-            throw new RuntimeException("Employee not found");
+            throw new NotFoundException("Employee not found");
         }
 
         updatedEmployee.setFirstName(employeeDTO.getFirstName());
@@ -155,7 +156,7 @@ public class EmployeeService {
             }
 
             else {
-                throw new RuntimeException("Department not found");
+                throw new NotFoundException("Department not found");
             }
         }
 
@@ -176,7 +177,7 @@ public class EmployeeService {
         Employee employee = this.findEmployee(code);
 
         if (employee == null) {
-            throw new RuntimeException("Employee not found");
+            throw new NotFoundException("Employee not found");
         }
 
         employeeRepository.delete(employee);
@@ -188,7 +189,7 @@ public class EmployeeService {
         Employee employee = this.findEmployee(code);
 
         if (employee == null) {
-            throw new RuntimeException("Employee not found");
+            throw new NotFoundException("Employee not found");
         }
 
         return employee.getPhone_numbers().stream()
