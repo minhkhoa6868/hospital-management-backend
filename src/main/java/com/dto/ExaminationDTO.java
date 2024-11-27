@@ -24,17 +24,11 @@ public class ExaminationDTO {
         this.diagnose = examination.getDiagnose();
         if (examination.getExamineDoctor() == null) {
             this.doctorCode = null;
-        }
-
-        else {
-            this.doctorCode = examination.getExamineDoctor().getEcode();
-        }
-
-        if (examination.getExamineDoctor() == null) {
             this.doctorName = null;
         }
 
         else {
+            this.doctorCode = examination.getExamineDoctor().getEcode();
             this.doctorName = examination.getExamineDoctor().getFirstName() + " " + examination.getExamineDoctor().getLastName();
         }
     }

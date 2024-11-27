@@ -28,6 +28,7 @@ public class EmployeeDTO {
     private String deptTitle;
     private List<ExaminationDTO> examinations;
     private List<HospitalizationInformationDTO> hospitalizationInformations;
+    private List<TreatmentDTO> treatments;
 
     public EmployeeDTO() {
         // Default constructor for deserialization
@@ -78,6 +79,16 @@ public class EmployeeDTO {
         else {
             this.hospitalizationInformations = employee.getHospitalizationInformations().stream()
                     .map(HospitalizationInformationDTO::new)
+                    .collect(Collectors.toList());
+        }
+
+        if (employee.getTreatments() == null) {
+            this.treatments = null;
+        }
+
+        else {
+            this.treatments = employee.getTreatments().stream()
+                    .map(TreatmentDTO::new)
                     .collect(Collectors.toList());
         }
     }

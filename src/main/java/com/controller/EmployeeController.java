@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.dto.EmployeeDTO;
 import com.dto.ExaminationDTO;
 import com.dto.HospitalizationInformationDTO;
+import com.dto.TreatmentDTO;
 import com.model.Employee;
 import com.service.EmployeeService;
 import com.service.ExaminationService;
 import com.service.HospitalizationInformationService;
+import com.service.TreatmentService;
 
 import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 @RequestMapping("/employee")
@@ -29,13 +30,16 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final HospitalizationInformationService hospitalizationInformationService;
     private final ExaminationService examinationService;
+    private final TreatmentService treatmentService;
 
     public EmployeeController(EmployeeService employeeService, 
                                 HospitalizationInformationService hospitalizationInformationService,
-                                ExaminationService examinationService) {
+                                ExaminationService examinationService,
+                                TreatmentService treatmentService) {
         this.employeeService = employeeService;
         this.hospitalizationInformationService = hospitalizationInformationService;
         this.examinationService = examinationService;
+        this.treatmentService = treatmentService;
     }
 
     // return all employees
@@ -96,7 +100,7 @@ public class EmployeeController {
         return ResponseEntity.ok(phoneNumbers);
     }
 
-    // handle get all hospitalization information
+    // get all hospitalization information of nurse
     @GetMapping("/{code}/hospitalization_information")
     public ResponseEntity<List<HospitalizationInformationDTO>> getAllHospitalizationInformationOfNurse(@PathVariable long code) {
         List<HospitalizationInformationDTO> hospitalizationInformation = hospitalizationInformationService.handleGetAllHospitalizationInformationOfNurse(code);
@@ -104,11 +108,20 @@ public class EmployeeController {
         return ResponseEntity.ok(hospitalizationInformation);
     }
     
-    // handle get all examination
+    // get all examination of doctor
     @GetMapping("/{code}/examination")
     public ResponseEntity<List<ExaminationDTO>> getAllExaminationOfDoctor(@PathVariable long code) {
         List<ExaminationDTO> examinations = this.examinationService.handleGetAllExaminationOfDoctor(code);
 
         return ResponseEntity.ok(examinations);
     }
+
+    // get all treatment of doctor
+    @GetMapping("/{code}/treatment")
+    public ResponseEntity<List<TreatmentDTO>> getAllTreatmentOfDoctor(@PathVariable long code) {
+        List<TreatmentDTO> treatments = this.treatmentService.handleGetAllTreatmentOfDoctor(code);
+
+        return ResponseEntity.ok(treatments);
+    }
+    
 }
