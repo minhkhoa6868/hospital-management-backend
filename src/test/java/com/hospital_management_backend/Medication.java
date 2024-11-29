@@ -1,26 +1,28 @@
-import java.time.Date;
+import java.sql.Date;
 
-import jakarta.presistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.presistence.*;
 
 @Entity
-@Getter
-@Setter
 @Table(name="Medication")
 public class Medication{
     
     @Id
+    @PrimaryKeyJoinColumn
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long MCode;
+    private Integer MCode;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
+    @Column(nullable = false)
     private String Name;
 
     @Column(nullable = false)
@@ -29,8 +31,9 @@ public class Medication{
     @Column(nullable = false)
     private Integer Quantity;
 
-    @Column(nullable = false, name = "Expiration Date", columnDefinition = "DATE")
-    private LocalDate ExpirationDate;
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false, name = "Expiration Date")
+    private Date ExpirationDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "m_status", nullable = false, columnDefinition = "ENUM('AVAILABLE', 'OUT_OF_STOCK', 'EXPIRED')")
