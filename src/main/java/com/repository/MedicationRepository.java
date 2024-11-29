@@ -12,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Repository
-public interface MedicationRepository extends JpaRepository<Medication,long>{
+public interface MedicationRepository extends JpaRepository<Medication,integer>{
     @Query(value = "SELECT * FROM Medication p WHERE p.Name = :Name", nativeQuery = true)
-    Optional<Medication> findPCode(@Param("Name") String name);
+    Optional<Medication> findMedication(@Param("Name") String name);
 
 
     @Query(value = "SELECT * FROM Medication p WHERE p.MCode = :code", nativeQuery = true)
-    List<Medication> findMedication(@Param("code") Integer MCode);
+    List<Medication> findMCode(@Param("code") Integer MCode);
 
     @Modifying
     @Transactional

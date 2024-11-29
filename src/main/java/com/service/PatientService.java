@@ -6,9 +6,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dto.PatientDTO;
 import com.repository.PatientRepository;
-
-import main.java.com.dto.PatientDTO;
 
 @Service
 @Transactional
@@ -60,7 +59,7 @@ public class PatientService{
         newPatient.setLastname(patientDTO.getLastname());
         newPatient.setdob(patientDTO.getdob());
         newPatient.setGender(patientDTO.getGender());
-        newPatient.setAdress(patientDTO.getAdress());
+        newPatient.setAddress(patientDTO.getAddress());
         newPatient.setPatienttype(patientDTO.getPatienttype());
 
         this.patient_repo.enableForeignKeyChecks();
@@ -80,7 +79,7 @@ public class PatientService{
         updated.setLastname(patientDTO.getLastname());
         updated.setdob(patientDTO.getdob());
         updated.setGender(patientDTO.getGender());
-        updated.setAdress(patientDTO.getAdress());
+        updated.setAddress(patientDTO.getAddress());
         updated.setPatienttype(patientDTO.getPatienttype());
         Patient saved = patient_repo.save(updated);
         return new PatientDTO(saved);
