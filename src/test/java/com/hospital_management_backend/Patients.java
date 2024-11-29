@@ -2,6 +2,7 @@ import java.sql.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.PrimaryKeyJoinColumn;
@@ -26,27 +27,29 @@ public class Patients{
         return PCode;
     }
 
-    @Column(nullable = false, name = "First Name", length = 50)
+    @Column(nullable = false, name = "First Name", columnDefinition = "VARCHAR(50)")
     private String first_name;
 
-    @Column(nullable = false, name = "Last Name", length = 50)
+    @Column(nullable = false, name = "Last Name", columnDefinition = "VARCHAR(50)")
     private String last_name;
 
-    @Column(nullable = false, name, columnDefinition = "ENUM('Male,Female')")
+    @Column(nullable = false, columnDefinition = "ENUM('Male,Female')")
     private Gender gender;
 
-    @Column(nullable = false, name = "Date of Birth")
-    @Temporal(TemporalType.DATE)
-    private Date DoB;
+    @Column(nullable = false, columnDefinition = "DATE", name = "Date of Birth")
+    private LocalDate DoB;
 
-    @Column(length = 200)
+    @Column(nullable = false, columnDefinition = "VARCHAR(200)")
     private String Address;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Patient Type", nullable = false, columnDefinition = "ENUM('Inpatient','Outpatient')")
     private PatientType patient_type;
+
     public PatientType getPatientType() {
         return patient_type;
     }
+
+    
     
 }
