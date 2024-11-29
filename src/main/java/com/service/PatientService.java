@@ -88,7 +88,7 @@ public class PatientService{
 
     //clear patient list
     @Transactional
-    public void handleDeleteAllEmployees() {
+    public void deleteAllPatients() {
         patient_repo.deleteAll();
     }
     
