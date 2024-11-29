@@ -1,10 +1,8 @@
+package com.model;
 import java.sql.Date;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.presistence.*;
@@ -20,11 +18,7 @@ public class Patients{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String PCode;
-
-    public String getPCode() {
-        return PCode;
-    }
+    private Long PCode;
 
     @Column(nullable = false, name = "First Name", length = 50)
     private String first_name;
@@ -45,8 +39,4 @@ public class Patients{
     @Enumerated(EnumType.STRING)
     @Column(name = "Patient Type", nullable = false, columnDefinition = "ENUM('Inpatient','Outpatient')")
     private PatientType patient_type;
-    public PatientType getPatientType() {
-        return patient_type;
-    }
-    
 }
