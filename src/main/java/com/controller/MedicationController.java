@@ -1,10 +1,13 @@
 package com.controller;
 
+import com.model.Medication;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,39 +27,20 @@ public class MedicationController{
 
     @GetMapping("/all")
     public ResponseEntity<List<MedicationDTO>> getAllMedication(){
-        List<MedicationDTO> Medications = MedicationServ.handleGetAllMedications();
+        List<MedicationDTO> Medications = MedicationServ.handleGetAllMedication();
         return ResponseEntity.ok(Medications);
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<MedicationDTO> getMedication(@PatchVariable long code){
+    public ResponseEntity<MedicationDTO> getMedication(@PathVariable long code){
         MedicationDTO MedicationDTO = MedicationServ.getOneMedication(code);
         return ResponseEntity.ok(MedicationDTO);
     }
 
     @PostMapping
     public ResponseEntity<MedicationDTO> createMedication(@RequestBody MedicationDTO MedicationDTO){
-        System.out.println(MedicationDTO.getName());
         Medication newMedication = MedicationServ.createMedication(MedicationDTO);
         MedicationDTO newMedicationDTO = new MedicationDTO(newMedication);
         return ResponseEntity.status(HttpStatus.CREATED).body(newMedicationDTO);
-    }
-
-    @PutMapping("/{code}")
-    public ResponseEntity<MedicationPTO> updateMedication(@PatchVariable long code,@RequestBody MedicationDTO MedicationDTO){
-        MedicationDTO updatedDTO = MedicationServ.updateMedication(code,MedicationDTO);
-        return ResponseEntity.ok(updatedDTO);
-    }
-
-    @DeleteMapping("/all")
-    public ResponseEntity<String> deleteAllMedication(){
-        MedicationServ.deleteAllMedication();
-        return ResponseEntity.ok("All Medications deleted successfully");
-    }
-
-    @DeleteMapping("/code")
-    public ResponseEntity<String> deleteMedication(@PatchVariable long code){
-        MedicationServ.deleteMedication(code);
-        return ResponseEntity.ok("Medication deleted successfully");
     }
 }

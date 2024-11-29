@@ -1,19 +1,20 @@
 package com.model;
-import java.sql.Date;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.presistence.*;
+import java.time.LocalDate;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Table(name="Patients", schema = "bkproject")
+@Table(name="Patients")
+@Getter
+@Setter
 public class Patients{
     
     public enum PatientType{
-        INPATIENT,
-        OUTPATIENT;
+        Inpatient,
+        Outpatient;
     }
     
     @Id
@@ -26,15 +27,14 @@ public class Patients{
     @Column(nullable = false, name = "last_name", length = 50)
     private String last_name;
 
+    // @Column(nullable = false)
+    // @Enumerated(EnumType.STRING)
+    // private Gender gender;
+
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
+    private LocalDate DOB;
 
-    @Column(nullable = false, name = "DoB")
-    @Temporal(TemporalType.DATE)
-    private Date DoB;
-
-    @Column(length = 200)
+    @Column(nullable = false)
     private String Address;
 
     @Enumerated(EnumType.STRING)

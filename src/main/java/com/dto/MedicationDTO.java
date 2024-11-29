@@ -1,22 +1,28 @@
 package com.dto;
 
-import main.java.com.model.MedStatus;
+import java.time.LocalDate;
+
+import com.model.Medication;
+import com.model.MedStatus;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 public class MedicationDTO{
-    private Integer MCode;
+    private long MCode;
     private String Name;
-    private Integer Price;
-    private Integer Quantity;
-    private Date ExpirationDate;
+    private int Price;
+    private int Quantity;
+    private LocalDate ExpirationDate;
     private MedStatus Status;
 
-    public MedicationDTO(Medicaton med){
+    public MedicationDTO(Medication med){
         this.MCode = med.getMCode();
         this.Name = med.getName();
         this.Price = med.getPrice();
-        this.Quantity = med.getQuantity;
+        this.Quantity = med.getQuantity();
         this.ExpirationDate = med.getExpirationDate();
         this.Status = med.getStatus();
     }

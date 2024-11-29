@@ -1,40 +1,33 @@
-import java.sql.Date;
+package com.model;
+
+import java.time.LocalDate;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import main.java.com.model.MedStatus;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name="Medication")
+@Getter
+@Setter
 public class Medication{
-    
     @Id
-    @PrimaryKeyJoinColumn
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer MCode;
+    private long MCode;
 
     @Column(nullable = false)
-    private String Name;
+    private String name;
 
     @Column(nullable = false)
-    private Integer Price;
+    private int price;
 
     @Column(nullable = false)
-    private Integer Quantity;
+    private int quantity;
 
-    @Temporal(TemporalType.DATE)
-    @Column(nullable = false, name = "expiration_date")
-    private Date ExpirationDate;
+    @Column(nullable = false)
+    private LocalDate expirationDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "m_status", nullable = false)
-    private MedStatus Status;
+    @Column(nullable = false)
+    private MedStatus status;
 }

@@ -1,5 +1,7 @@
 package com.service;
 
+import com.model.Medication;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +23,7 @@ public class MedicationService{
 
     //find by MCode
     @Transactional
-    public Medication findMedication(integer code){
+    public Medication findMedication(long code){
         Optional<Medication> targetMedication = this.medRepo.findMCode(code);
 
         if (targetMedication.isPresent()){
@@ -31,17 +33,17 @@ public class MedicationService{
     }
 
     @Transactional
-    public List<Medication> getAllMedication(Medication Medication){
+    public List<MedicationDTO> handleGetAllMedication(){
         List<Medication> Medications = medRepo.findAll();
 
         return Medications.stream().map(MedicationDTO::new).toList();
     }
 
-    public MedicationDTO getOneMedication(integer code){
+    public MedicationDTO getOneMedication(long code){
         Medication Medication = this.findMedication(code);
 
         if (Medication == null){
-            throw new RuntumeException("Medication not found");
+            return null;
         }
         return new MedicationDTO(Medication);
     }
@@ -49,8 +51,6 @@ public class MedicationService{
     //create new Medication
     @Transactional
     public Medication createMedication(MedicationDTO MedicationDTO){
-        System.out.println(MedicationDTO);
-
         Medication newMedication = new Medication();
 
         this.medRepo.disableForeignKeyChecks();
@@ -59,41 +59,9 @@ public class MedicationService{
         newMedication.setPrice(MedicationDTO.getPrice());
         newMedication.setQuantity(MedicationDTO.getQuantity());
         newMedication.setExpirationDate(MedicationDTO.getExpirationDate());
-        newMedication.setMedStatus(MedicationDTO.getMedStatus());
+        newMedication.setStatus(MedicationDTO.getStatus());
 
         this.medRepo.enableForeignKeyChecks();
         return medRepo.save(newMedication);
-    }
-
-    //update Medication info
-    @Transactional
-    public MedicationDTO updateMedication(integer code, MedicationDTO MedicationDTO){
-        Medication updated = this.findMedication(code);
-
-        if (updated==null){
-            throw new RuntimeException("Medication not found");
-        }
-
-        updated.setName(MedicationDTO.getName());
-        updated.setPrice(MedicationDTO.getPrice());
-        updated.setQuantity(MedicationDTO.getQuantity());
-        updated.setExpirationDate(MedicationDTO.getExpirationDate());
-        updated.setMedStatus(MedicationDTO.getMedStatus());
-        Medication saved = medRepo.save(updated);
-        return new MedicationDTO(saved);
-    }
-
-    //clear Medication list
-    @Transactional
-    public void deleteAllMedications() {
-        medRepo.deleteAll();
-    }
-    
-    //delete Medication
-    @Transactional
-    public void deleteMedication(integer code){
-        Medication Medication = this.findMedication(code);
-        if (Medication == null) {throw new RuntimeException("Medication not found");}
-        medRepo.delete(Medication);
     }
 }
