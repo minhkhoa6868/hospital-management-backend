@@ -17,7 +17,7 @@ import com.dto.MedicationDTO;
 import com.service.MedicationService;
 
 @RestController
-@RequestMapping("/Medication")
+@RequestMapping("/medication")
 public class MedicationController{
     private final MedicationService MedicationServ;
     

@@ -61,8 +61,6 @@ public class EmployeeService {
     // handle create employee
     @Transactional
     public Employee handleCreateEmployee(EmployeeDTO employeeDTO) {
-        System.out.println(employeeDTO);
-
         Employee newEmployee = new Employee();
 
         this.employeeRepository.disableForeignKeyChecks();

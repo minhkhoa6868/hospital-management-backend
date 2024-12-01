@@ -9,6 +9,8 @@ import com.dto.HospitalizationInformationDTO;
 import com.model.Employee;
 import com.model.Employee_type;
 import com.model.HospitalizationInformation;
+import com.model.Patients;
+import com.model.Patients.PatientType;
 import com.repository.HospitalizationInformationRepository;
 
 import jakarta.transaction.Transactional;
@@ -20,11 +22,14 @@ import com.exception.NotFoundException;
 public class HospitalizationInformationService {
     private final HospitalizationInformationRepository hospitalizationInformationRepository;
     private final EmployeeService employeeService;
+    private final PatientService patientService;
 
     public HospitalizationInformationService(HospitalizationInformationRepository hospitalizationInformationRepository,
-            EmployeeService employeeService) {
+            EmployeeService employeeService,
+            PatientService patientService) {
         this.hospitalizationInformationRepository = hospitalizationInformationRepository;
         this.employeeService = employeeService;
+        this.patientService = patientService;
     }
 
     // find information
@@ -84,6 +89,25 @@ public class HospitalizationInformationService {
             }
 
             newInformation.setTakeCareNurse(nurse);
+        }
+
+        if (hospitalizationInformation.getTakeCarePatient() == null) {
+            this.hospitalizationInformationRepository.disableForeignKeyChecks();
+        }
+
+        else {
+            Patients patient = this.patientService.findPatient(hospitalizationInformation.getTakeCarePatient().getPcode());
+            PatientType Inpatient = PatientType.Inpatient;
+
+            if (patient == null) {
+                throw new NotFoundException("Patient not found");
+            }
+
+            if (patient.getPatientType() != Inpatient) {
+                throw new NotFoundException("Patient is not an inpatient");
+            }
+
+            newInformation.setTakeCarePatient(patient);
         }
 
         this.hospitalizationInformationRepository.enableForeignKeyChecks();

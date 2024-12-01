@@ -14,10 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface MedicationRepository extends JpaRepository<Medication,Long>{
     @Query(value = "SELECT * FROM Medication p WHERE p.name = :name", nativeQuery = true)
-    Optional<Medication> findMedicationName(@Param("Name") String name);
+    Optional<Medication> findMedicationName(@Param("name") String name);
 
 
-    @Query(value = "SELECT * FROM Medication p WHERE p.MCode = :code", nativeQuery = true)
+    @Query(value = "SELECT * FROM Medication p WHERE p.mcode = :code", nativeQuery = true)
     Optional<Medication> findMCode(@Param("code") long code);
 
     @Modifying

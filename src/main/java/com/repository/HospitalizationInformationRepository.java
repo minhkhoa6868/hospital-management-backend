@@ -21,6 +21,9 @@ public interface HospitalizationInformationRepository extends JpaRepository<Hosp
     @Query(value = "SELECT * FROM Hospitalization_information hi WHERE hi.nurse_code = :nurseCode", nativeQuery = true)
     List<HospitalizationInformation> findByNurseCode(Long nurseCode);
 
+    @Query(value = "SELECT * FROM Hospitalization_information hi WHERE hi.ip_code = :patientCode", nativeQuery = true)
+    List<Long> findByPatientCode(String patientCode);
+
     @Modifying
     @Transactional
     @Query(value = "SET FOREIGN_KEY_CHECKS=0", nativeQuery = true)

@@ -2,6 +2,8 @@ package com.service;
 
 import com.model.Employee;
 import com.model.Examination;
+import com.model.Patients;
+import com.model.Patients.PatientType;
 import com.model.Employee_type;
 import com.dto.ExaminationDTO;
 import com.exception.NotFoundException;
@@ -19,10 +21,12 @@ import org.springframework.stereotype.Service;
 public class ExaminationService {
     private final ExaminationRepository examinationRepository;
     private final EmployeeService employeeService;
+    private final PatientService patientService;
 
-    public ExaminationService(ExaminationRepository examinationRepository, EmployeeService employeeService) {
+    public ExaminationService(ExaminationRepository examinationRepository, EmployeeService employeeService, PatientService patientService) {
         this.examinationRepository = examinationRepository;
         this.employeeService = employeeService;
+        this.patientService = patientService;
     }
 
     // handle find examination by id
@@ -80,6 +84,25 @@ public class ExaminationService {
             }
 
             newExamination.setExamineDoctor(doctor);
+        }
+
+        if (examination.getExaminePatient() == null) {
+            this.examinationRepository.disableForeignKeyChecks();
+        }
+
+        else {
+            Patients patient = this.patientService.findPatient(examination.getExaminePatient().getPcode());
+            PatientType Outpatient = PatientType.Outpatient;
+
+            if (patient == null) {
+                throw new NotFoundException("Patient not found");
+            }
+
+            if (patient.getPatientType() != Outpatient) {
+                throw new NotFoundException("Patient is not an outpatient");
+            }
+
+            newExamination.setExaminePatient(patient);
         }
 
         this.examinationRepository.enableForeignKeyChecks();

@@ -1,6 +1,7 @@
 package com.service;
 
 import com.model.Patients;
+import com.model.Patients.PatientType;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +23,7 @@ public class PatientService{
     }
 
     //find by PCode
-    @Transactional
-    public Patients findPatient(long code){
+    public Patients findPatient(String code){
         Optional<Patients> targetPatient = this.patient_repo.findPCode(code);
 
         if (targetPatient.isPresent()){
@@ -32,14 +32,13 @@ public class PatientService{
         return null;
     }
 
-    @Transactional
     public List<PatientDTO> handleGetAllPatient(){
         List<Patients> patients = patient_repo.findAll();
 
         return patients.stream().map(PatientDTO::new).toList();
     }
 
-    public PatientDTO handleGetOnePatient(long code){
+    public PatientDTO handleGetOnePatient(String code){
         Patients patient = this.findPatient(code);
 
         if (patient == null){
@@ -49,20 +48,23 @@ public class PatientService{
     }
 
     //create new patient
-    @Transactional
-    public Patients handleCreatePatient(PatientDTO patientDTO){
-        System.out.println(patientDTO);
+    public Patients handleCreatePatient(Patients patient){
+        Patients newPatient = patient_repo.save(patient);
 
-        Patients newPatient = new Patients();
+        String patientCode = "";
+        PatientType patientType = newPatient.getPatientType();
+        Long id = newPatient.getId();
 
-        this.patient_repo.disableForeignKeyChecks();
+        if (patientType == PatientType.Inpatient){
+            patientCode = "IP" + String.format("%09d", id);
+        }
 
-        newPatient.setFirst_name(patientDTO.getFirstName());
-        newPatient.setLast_name(patientDTO.getLastName());
-        newPatient.setAddress(patientDTO.getAddress());
-        newPatient.setPatient_type(patientDTO.getPatient_type());
-        
-        this.patient_repo.enableForeignKeyChecks();
+        else if (patientType == PatientType.Outpatient){
+            patientCode = "OP" + String.format("%09d", id);
+        }
+
+        newPatient.setPcode(patientCode);
+
         return patient_repo.save(newPatient);
     }
 }
