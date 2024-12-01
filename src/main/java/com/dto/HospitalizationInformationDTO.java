@@ -19,6 +19,8 @@ public class HospitalizationInformationDTO {
     private String sickroom;
     private Long nurseCode;
     private String nurseName;
+    private String patientCode;
+    private String patientName;
     private List<TreatmentDTO> treatments;
 
     public HospitalizationInformationDTO(HospitalizationInformation hi) {
@@ -36,6 +38,16 @@ public class HospitalizationInformationDTO {
         else {
             this.nurseCode = hi.getTakeCareNurse().getEcode();
             this.nurseName = hi.getTakeCareNurse().getFirstName() + " " + hi.getTakeCareNurse().getLastName();
+        }
+
+        if (hi.getTakeCarePatient() == null) {
+            this.patientCode = null;
+            this.patientName = null;
+        }
+
+        else {
+            this.patientCode = hi.getTakeCarePatient().getPcode();
+            this.patientName = hi.getTakeCarePatient().getFirstName() + " " + hi.getTakeCarePatient().getLastName();
         }
 
         if (hi.getTreatments() == null) {

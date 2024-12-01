@@ -36,6 +36,10 @@ public class HospitalizationInformation {
     @JoinColumn(name = "nurse_code", referencedColumnName = "Ecode", nullable = true)
     private Employee takeCareNurse;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ip_code", referencedColumnName = "Pcode", nullable = true)
+    private Patients takeCarePatient;
+
     @OneToMany(mappedBy = "treatInformation", cascade = CascadeType.ALL)
     private Set<Treatment> treatments = new HashSet<>();
 }

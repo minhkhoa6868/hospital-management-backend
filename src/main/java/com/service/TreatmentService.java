@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import com.model.Employee;
 import com.model.Employee_type;
 import com.model.HospitalizationInformation;
+import com.model.Patients;
 import com.model.Treatment;
+import com.repository.HospitalizationInformationRepository;
 import com.repository.TreatmentRepository;
 
 import jakarta.transaction.Transactional;
@@ -20,15 +22,21 @@ import com.exception.NotFoundException;
 @Transactional
 public class TreatmentService {
     private final TreatmentRepository treatmentRepository;
+    private final HospitalizationInformationRepository hospitalizationInformationRepository;
     private final EmployeeService employeeService;
     private final HospitalizationInformationService hospitalizationInformationService;
+    private final PatientService patientService;
 
     public TreatmentService(TreatmentRepository treatmentRepository, 
                             EmployeeService employeeService, 
-                            HospitalizationInformationService hospitalizationInformationService) {
+                            HospitalizationInformationService hospitalizationInformationService,
+                            PatientService patientService,
+                            HospitalizationInformationRepository hospitalizationInformationRepository) {
         this.treatmentRepository = treatmentRepository;
         this.employeeService = employeeService;
         this.hospitalizationInformationService = hospitalizationInformationService;
+        this.patientService = patientService;
+        this.hospitalizationInformationRepository = hospitalizationInformationRepository;
     }
 
     // handle find treatment
@@ -128,14 +136,33 @@ public class TreatmentService {
 
     // handle get all treatment of hospitalization information
 
-    public List<TreatmentDTO> handleGetAllTreatmentOfHospitalization(long hospitalizationId) {
-        HospitalizationInformation  hospitalizationInformation = this.hospitalizationInformationService.findInformation(hospitalizationId);
+    // public List<TreatmentDTO> handleGetAllTreatmentOfHospitalization(long hospitalizationId) {
+    //     HospitalizationInformation  hospitalizationInformation = this.hospitalizationInformationService.findInformation(hospitalizationId);
 
-        if (hospitalizationInformation == null) {
+    //     if (hospitalizationInformation == null) {
+    //         throw new NotFoundException("Hospitalization information not found");
+    //     }
+
+    //     List<Treatment> treatments = treatmentRepository.findByInformationId(hospitalizationId);
+
+    //     return treatments.stream().map(TreatmentDTO::new).toList();
+    // }
+
+    // handle get all information about treatment of patient
+    public List<TreatmentDTO> handleGetAllTreatmentOfPatient(String patientCode) {
+        Patients patients = this.patientService.findPatient(patientCode);
+
+        if (patients == null) {
+            throw new NotFoundException("Patient not found");
+        }
+
+        List<Long> informations = this.hospitalizationInformationRepository.findByPatientCode(patientCode);
+
+        if (informations.isEmpty()) {
             throw new NotFoundException("Hospitalization information not found");
         }
 
-        List<Treatment> treatments = treatmentRepository.findByInformationId(hospitalizationId);
+        List<Treatment> treatments = this.treatmentRepository.findByInformationId(informations);
 
         return treatments.stream().map(TreatmentDTO::new).toList();
     }

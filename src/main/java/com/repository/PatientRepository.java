@@ -13,8 +13,8 @@ import com.model.Patients;
 
 @Repository
 public interface PatientRepository extends JpaRepository<Patients,Long>{
-    @Query(value = "SELECT * FROM Patient p WHERE p.PCode = :PCode", nativeQuery = true)
-    Optional<Patients> findPCode(@Param("PCode") long PCode);
+    @Query(value = "SELECT * FROM Patients p WHERE p.pcode = :PCode", nativeQuery = true)
+    Optional<Patients> findPCode(@Param("PCode") String PCode);
 
     @Modifying
     @Transactional

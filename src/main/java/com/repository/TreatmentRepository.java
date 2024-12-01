@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.model.Treatment;
@@ -19,8 +20,8 @@ public interface TreatmentRepository extends JpaRepository<Treatment, Long> {
     @Query(value = "SELECT * FROM Treatment t WHERE t.doc_code = :doctorCode", nativeQuery = true)
     List<Treatment> findByDoctorCode(long doctorCode);
 
-    @Query(value = "SELECT * FROM Treatment t WHERE t.hos_info_id = :informationId", nativeQuery = true)
-    List<Treatment> findByInformationId(long informationId);
+    @Query(value = "SELECT * FROM Treatment t WHERE t.hos_info_id IN (:informationIds)", nativeQuery = true)
+    List<Treatment> findByInformationId(@Param("informationIds") List<Long> informationIds);
 
     @Modifying
     @Transactional

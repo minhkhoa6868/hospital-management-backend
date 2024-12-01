@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="Medication")
@@ -13,21 +15,24 @@ import lombok.Setter;
 public class Medication{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long MCode;
+    private long Mcode;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "INT", nullable = false)
     private int price;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "INT", nullable = false)
     private int quantity;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate expirationDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MedStatus status;
+    private MedStatus status;  
+
+    @OneToMany(mappedBy = "medication", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Medication_effect> effects = new HashSet<>();
 }

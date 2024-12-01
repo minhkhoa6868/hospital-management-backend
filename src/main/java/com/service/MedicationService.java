@@ -1,6 +1,7 @@
 package com.service;
 
 import com.model.Medication;
+import com.model.Medication_effect;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,18 +51,32 @@ public class MedicationService{
 
     //create new Medication
     @Transactional
-    public Medication createMedication(MedicationDTO MedicationDTO){
+    public Medication createMedication(MedicationDTO medicationDTO){
         Medication newMedication = new Medication();
 
         this.medRepo.disableForeignKeyChecks();
 
-        newMedication.setName(MedicationDTO.getName());
-        newMedication.setPrice(MedicationDTO.getPrice());
-        newMedication.setQuantity(MedicationDTO.getQuantity());
-        newMedication.setExpirationDate(MedicationDTO.getExpirationDate());
-        newMedication.setStatus(MedicationDTO.getStatus());
+        newMedication.setName(medicationDTO.getName());
+        newMedication.setPrice(medicationDTO.getPrice());
+        newMedication.setQuantity(medicationDTO.getQuantity());
+        newMedication.setExpirationDate(medicationDTO.getExpirationDate());
+        newMedication.setStatus(medicationDTO.getStatus());
+
+        // handle create phone number
+        if (medicationDTO.getEffects() != null && !medicationDTO.getEffects().isEmpty()) {
+            for (String effect : medicationDTO.getEffects()) {
+                // Avoid duplicates or null values
+                if (effect != null && !effect.trim().isEmpty()) {
+                    Medication_effect newEffect = new Medication_effect();
+                    newEffect.setEffect(effect.trim());
+                    newEffect.setMedication(newMedication); // Establish relationship
+                    newMedication.getEffects().add(newEffect); // Add to medication
+                }
+            }
+        }
 
         this.medRepo.enableForeignKeyChecks();
+
         return medRepo.save(newMedication);
     }
 }

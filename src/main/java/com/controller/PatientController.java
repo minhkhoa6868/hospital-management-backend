@@ -12,17 +12,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.service.PatientService;
-
+import com.service.TreatmentService;
 import com.dto.PatientDTO;
+import com.dto.TreatmentDTO;
 import com.model.Patients;
 
 @RestController
 @RequestMapping("/patient")
 public class PatientController{
     private final PatientService patientServ;
+    private final TreatmentService treatmentService;
     
-    public PatientController(PatientService patientServ){
+    public PatientController(PatientService patientServ, TreatmentService treatmentService){
         this.patientServ = patientServ;
+        this.treatmentService = treatmentService;
     }
 
     @GetMapping("/all")
@@ -32,15 +35,23 @@ public class PatientController{
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<PatientDTO> getPatient(@PathVariable long code){
+    public ResponseEntity<PatientDTO> getPatient(@PathVariable String code){
         PatientDTO patientDTO = patientServ.handleGetOnePatient(code);
         return ResponseEntity.ok(patientDTO);
     }
 
     @PostMapping
-    public ResponseEntity<PatientDTO> createPatient(@RequestBody PatientDTO patientDTO){
-        Patients newPatient = patientServ.handleCreatePatient(patientDTO);
+    public ResponseEntity<PatientDTO> createPatient(@RequestBody Patients patient){
+        Patients newPatient = patientServ.handleCreatePatient(patient);
         PatientDTO newPatientDTO = new PatientDTO(newPatient);
         return ResponseEntity.status(HttpStatus.CREATED).body(newPatientDTO);
     }
+
+    @GetMapping("/{code}/treatment")
+    public ResponseEntity<List<TreatmentDTO>> getAllTreatmentOfPatient(@PathVariable String code) {
+        List<TreatmentDTO> treatments = treatmentService.handleGetAllTreatmentOfPatient(code);
+
+        return ResponseEntity.ok(treatments);
+    }
+    
 }

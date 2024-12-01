@@ -7,7 +7,7 @@ import com.dto.HospitalizationInformationDTO;
 import com.model.HospitalizationInformation;
 import com.service.HospitalizationInformationService;
 import com.service.TreatmentService;
-import com.dto.TreatmentDTO;
+//import com.dto.TreatmentDTO;
 
 import java.util.List;
 
@@ -55,11 +55,11 @@ public class HospitalizationInformationController {
     }
     
     // get all treatment of hospitalization information
-    @GetMapping("/{id}/treatment")
-    public ResponseEntity<List<TreatmentDTO>> getAllTreatmentOfInformation(@PathVariable long id) {
-        List<TreatmentDTO> treatments = this.treatmentService.handleGetAllTreatmentOfHospitalization(id);
+    // @GetMapping("/{id}/treatment")
+    // public ResponseEntity<List<TreatmentDTO>> getAllTreatmentOfInformation(@PathVariable long id) {
+    //     List<TreatmentDTO> treatments = this.treatmentService.handleGetAllTreatmentOfHospitalization(id);
 
-        return ResponseEntity.ok(treatments);
-    }
+    //     return ResponseEntity.ok(treatments);
+    // }
     
 }

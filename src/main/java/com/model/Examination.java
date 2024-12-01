@@ -30,4 +30,8 @@ public class Examination {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doc_code", referencedColumnName = "Ecode", nullable = true)
     private Employee examineDoctor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "op_code", referencedColumnName = "Pcode", nullable = true)
+    private Patients examinePatient;
 }
