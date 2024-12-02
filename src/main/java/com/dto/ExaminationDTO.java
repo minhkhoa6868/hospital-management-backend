@@ -18,6 +18,7 @@ public class ExaminationDTO {
     private String doctorName;
     private String patientCode;
     private String patientName;
+    private String medicationName;
 
     public ExaminationDTO(Examination examination) {
         this.date = examination.getDate();
@@ -31,7 +32,8 @@ public class ExaminationDTO {
 
         else {
             this.doctorCode = examination.getExamineDoctor().getEcode();
-            this.doctorName = examination.getExamineDoctor().getFirstName() + " " + examination.getExamineDoctor().getLastName();
+            this.doctorName = examination.getExamineDoctor().getFirstName() + " "
+                    + examination.getExamineDoctor().getLastName();
         }
 
         if (examination.getExaminePatient() == null) {
@@ -41,7 +43,19 @@ public class ExaminationDTO {
 
         else {
             this.patientCode = examination.getExaminePatient().getPcode();
-            this.patientName = examination.getExaminePatient().getFirstName() + " " + examination.getExaminePatient().getLastName();
+            this.patientName = examination.getExaminePatient().getFirstName() + " "
+                    + examination.getExaminePatient().getLastName();
+        }
+
+        if (examination.getHasMedExams() == null) {
+            this.medicationName = null;
+        }
+
+        else {
+            this.medicationName = examination.getHasMedExams().stream()
+                    .map(hasMedExam -> hasMedExam.getMedicationExamination().getName())
+                    .reduce((name1, name2) -> name1 + ", " + name2)
+                    .orElse(null);
         }
     }
 }

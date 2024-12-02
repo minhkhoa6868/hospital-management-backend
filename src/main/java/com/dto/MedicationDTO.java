@@ -2,6 +2,7 @@ package com.dto;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.model.Medication;
 import com.model.MedStatus;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MedicationDTO {
-    private long Mcode;
+    private Long Mcode;
     private String name;
     private int price;
     private int quantity;
@@ -33,7 +34,7 @@ public class MedicationDTO {
         }
 
         else {
-            this.effects = med.getEffects().stream().map(effect -> effect.getEffect()).toList();
+            this.effects = med.getEffects().stream().map(effect -> effect.getEffect()).collect(Collectors.toList());
         }
     }
 }

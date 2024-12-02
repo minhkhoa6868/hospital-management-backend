@@ -25,6 +25,7 @@ public class TreatmentDTO {
     private String takeCareNurseName;
     private String patientCode;
     private String patientName;
+    private String medicationName;
 
     public TreatmentDTO(Treatment treatment) {
         this.result = treatment.getResult();
@@ -37,7 +38,8 @@ public class TreatmentDTO {
 
         else {
             this.doctorCode = treatment.getTreatDoctor().getEcode();
-            this.doctorName = treatment.getTreatDoctor().getFirstName() + " " + treatment.getTreatDoctor().getLastName();
+            this.doctorName = treatment.getTreatDoctor().getFirstName() + " "
+                    + treatment.getTreatDoctor().getLastName();
         }
 
         if (treatment.getTreatInformation() == null) {
@@ -65,7 +67,8 @@ public class TreatmentDTO {
 
         else {
             this.takeCareNurseCode = treatment.getTreatInformation().getTakeCareNurse().getEcode();
-            this.takeCareNurseName = treatment.getTreatInformation().getTakeCareNurse().getFirstName() + " " + treatment.getTreatInformation().getTakeCareNurse().getLastName();
+            this.takeCareNurseName = treatment.getTreatInformation().getTakeCareNurse().getFirstName() + " "
+                    + treatment.getTreatInformation().getTakeCareNurse().getLastName();
         }
 
         if (treatment.getTreatInformation().getTakeCarePatient() == null) {
@@ -75,7 +78,19 @@ public class TreatmentDTO {
 
         else {
             this.patientCode = treatment.getTreatInformation().getTakeCarePatient().getPcode();
-            this.patientName = treatment.getTreatInformation().getTakeCarePatient().getFirstName() + " " + treatment.getTreatInformation().getTakeCarePatient().getLastName();
+            this.patientName = treatment.getTreatInformation().getTakeCarePatient().getFirstName() + " "
+                    + treatment.getTreatInformation().getTakeCarePatient().getLastName();
+        }
+
+        if (treatment.getHasMedTreatments() == null) {
+            this.medicationName = null;
+        }
+
+        else {
+            this.medicationName = treatment.getHasMedTreatments().stream()
+                    .map(hasMedTreatment -> hasMedTreatment.getMedicationTreatment().getName())
+                    .reduce((name1, name2) -> name1 + ", " + name2) // Combine names into a single string
+                    .orElse(null);
         }
     }
 }

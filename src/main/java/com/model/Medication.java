@@ -8,6 +8,9 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.model.HasMedExam.HasMedExam;
+import com.model.HasMedTreatment.HasMedTreatment;
+
 @Entity
 @Table(name="Medication")
 @Getter
@@ -35,4 +38,10 @@ public class Medication{
 
     @OneToMany(mappedBy = "medication", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Medication_effect> effects = new HashSet<>();
+
+    @OneToMany(mappedBy = "medicationExamination", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<HasMedExam> hasMedExams = new HashSet<>();
+
+    @OneToMany(mappedBy = "medicationTreatment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<HasMedTreatment> hasMedTreaments = new HashSet<>();
 }
