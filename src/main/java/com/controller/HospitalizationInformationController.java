@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dto.HospitalizationInformationDTO;
 import com.model.HospitalizationInformation;
 import com.service.HospitalizationInformationService;
-import com.service.TreatmentService;
-//import com.dto.TreatmentDTO;
 
 import java.util.List;
 
@@ -22,12 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/hospitalization_information")
 public class HospitalizationInformationController {
     private final HospitalizationInformationService hospitalizationInformationService;
-    private final TreatmentService treatmentService;
 
-    public HospitalizationInformationController(HospitalizationInformationService hospitalizationInformationService,
-                                                TreatmentService treatmentService) {
+    public HospitalizationInformationController(HospitalizationInformationService hospitalizationInformationService) {
         this.hospitalizationInformationService = hospitalizationInformationService;
-        this.treatmentService = treatmentService;
     }
 
     // get all information
@@ -53,13 +48,4 @@ public class HospitalizationInformationController {
         
         return ResponseEntity.status(HttpStatus.CREATED).body(newInformation);
     }
-    
-    // get all treatment of hospitalization information
-    // @GetMapping("/{id}/treatment")
-    // public ResponseEntity<List<TreatmentDTO>> getAllTreatmentOfInformation(@PathVariable long id) {
-    //     List<TreatmentDTO> treatments = this.treatmentService.handleGetAllTreatmentOfHospitalization(id);
-
-    //     return ResponseEntity.ok(treatments);
-    // }
-    
 }

@@ -1,6 +1,10 @@
 package com.model;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.model.HasMedTreatment.HasMedTreatment;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,4 +35,7 @@ public class Treatment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hos_info_id", referencedColumnName = "id", nullable = true)
     private HospitalizationInformation treatInformation;
+
+    @OneToMany(mappedBy = "treatmentMedication", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<HasMedTreatment> hasMedTreatments = new HashSet<>();
 }

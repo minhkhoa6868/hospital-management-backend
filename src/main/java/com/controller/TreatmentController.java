@@ -3,8 +3,10 @@ package com.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dto.MedicationDTO;
 import com.dto.TreatmentDTO;
 import com.model.Treatment;
+import com.service.HasMedTreatmentService;
 import com.service.TreatmentService;
 
 import java.util.List;
@@ -22,9 +24,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/treatment")
 public class TreatmentController {
     private final TreatmentService treatmentService;
+    private final HasMedTreatmentService hasMedTreatmentService;
 
-    public TreatmentController(TreatmentService treatmentService) {
+    public TreatmentController(TreatmentService treatmentService, HasMedTreatmentService hasMedTreatmentService) {
         this.treatmentService = treatmentService;
+        this.hasMedTreatmentService = hasMedTreatmentService;
     }
 
     // get all treatments
@@ -49,5 +53,13 @@ public class TreatmentController {
         TreatmentDTO newTreatment = treatmentService.handleCreateTreatment(treatment);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(newTreatment);
-    }    
+    }
+    
+    // get all medication of treatment
+    @GetMapping("/{id}/medication")
+    public ResponseEntity<List<MedicationDTO>> getAllMedicationOfTreatment(@PathVariable long id) {
+        List<MedicationDTO> medications = this.hasMedTreatmentService.handleGetAllMedicationByTreatId(id);
+
+        return ResponseEntity.ok(medications);
+    }
 }

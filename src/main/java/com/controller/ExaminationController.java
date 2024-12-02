@@ -4,8 +4,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.ExaminationDTO;
+import com.dto.MedicationDTO;
 import com.model.Examination;
 import com.service.ExaminationService;
+import com.service.HasMedExamService;
 
 import java.util.List;
 
@@ -20,9 +22,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/examination")
 public class ExaminationController {
     private final ExaminationService examinationService;
+    private final HasMedExamService hasMedExamService;
 
-    public ExaminationController(ExaminationService examinationService) {
+    public ExaminationController(ExaminationService examinationService, HasMedExamService hasMedExamService) {
         this.examinationService = examinationService;
+        this.hasMedExamService = hasMedExamService;
     }
 
     @PostMapping
@@ -44,5 +48,13 @@ public class ExaminationController {
         ExaminationDTO examination = this.examinationService.handleGetOneExamination(id);
 
         return ResponseEntity.ok(examination);
+    }
+
+    // get all medication of examination
+    @GetMapping("/{id}/medication")
+    public ResponseEntity<List<MedicationDTO>> getAllMedication(@PathVariable long id) {
+        List<MedicationDTO> medications = this.hasMedExamService.getAllMedicationByExamId(id);
+
+        return ResponseEntity.ok(medications);
     }
 }
