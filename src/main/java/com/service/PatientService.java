@@ -1,5 +1,6 @@
 package com.service;
 
+import com.model.PatientCounter;
 import com.model.Patients;
 import com.model.Patients.PatientType;
 
@@ -10,16 +11,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dto.PatientDTO;
+import com.exception.NotFoundException;
+import com.repository.PatientCounterRepository;
 import com.repository.PatientRepository;
 
 @Service
 @Transactional
 public class PatientService{
     private final PatientRepository patient_repo;
+    private final PatientCounterRepository patientCounterRepository;
+    private final PatientCounterService patientCounterService;
 
     //initialize
-    public PatientService(PatientRepository patient_repo){
+    public PatientService(PatientRepository patient_repo, PatientCounterService patientCounterService, PatientCounterRepository patientCounterRepository){
         this.patient_repo = patient_repo;
+        this.patientCounterService = patientCounterService;
+        this.patientCounterRepository = patientCounterRepository;
     }
 
     //find by PCode
@@ -53,15 +60,25 @@ public class PatientService{
 
         String patientCode = "";
         PatientType patientType = newPatient.getPatientType();
-        Long id = newPatient.getId();
+        PatientCounter patientCounter = this.patientCounterService.findPatientCounter(patientType);
+
+        if (patientCounter == null) {
+            throw new NotFoundException("Patient type not found");
+        }
+
+        Long sequence = patientCounter.getCurrentSequence();
 
         if (patientType == PatientType.Inpatient){
-            patientCode = "IP" + String.format("%09d", id);
+            patientCode = "IP" + String.format("%09d", sequence);
         }
 
         else if (patientType == PatientType.Outpatient){
-            patientCode = "OP" + String.format("%09d", id);
+            patientCode = "OP" + String.format("%09d", sequence);
         }
+
+        sequence = patientCounter.getCurrentSequence() + 1;
+        patientCounter.setCurrentSequence(sequence);
+        this.patientCounterRepository.save(patientCounter);
 
         newPatient.setPcode(patientCode);
 
