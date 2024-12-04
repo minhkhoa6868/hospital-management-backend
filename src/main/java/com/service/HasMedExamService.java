@@ -8,6 +8,7 @@ import com.dto.HasMedExamDTO;
 import com.dto.MedicationDTO;
 import com.exception.NotFoundException;
 import com.model.Examination;
+import com.model.MedStatus;
 import com.model.Medication;
 import com.model.HasMedExam.HasMedExam;
 import com.model.HasMedExam.HasMedExamId;
@@ -24,13 +25,14 @@ public class HasMedExamService {
     private final MedicationService medicationService;
     private final MedicationRepository medicationRepository;
 
-    public HasMedExamService(HasMedExamRepository hasMedExamRepository, ExaminationService examinationService, MedicationService medicationService, MedicationRepository medicationRepository) {
+    public HasMedExamService(HasMedExamRepository hasMedExamRepository, ExaminationService examinationService,
+            MedicationService medicationService, MedicationRepository medicationRepository) {
         this.hasMedExamRepository = hasMedExamRepository;
         this.examinationService = examinationService;
         this.medicationService = medicationService;
         this.medicationRepository = medicationRepository;
     }
-    
+
     // handle create HasMedExam
     public HasMedExamDTO handleCreateHasMedExam(HasMedExam hasMedExam) {
         if (hasMedExam.getExaminationMedication() == null) {
@@ -39,28 +41,26 @@ public class HasMedExamService {
         if (hasMedExam.getMedicationExamination() == null) {
             throw new IllegalArgumentException("Medication information is missing");
         }
-    
+
         // Accessing the correct examId
         Examination examination = this.examinationService.findExamination(
-            hasMedExam.getExaminationMedication().getId()
-        );
-    
+                hasMedExam.getExaminationMedication().getId());
+
         if (examination == null) {
             throw new NotFoundException("Examination not found");
         }
-    
+
         Medication medication = this.medicationService.findMedication(
-            hasMedExam.getMedicationExamination().getMcode()
-        );
-    
+                hasMedExam.getMedicationExamination().getMcode());
+
         if (medication == null) {
             throw new NotFoundException("Medication not found");
         }
-    
+
         HasMedExamId hasMedExamId = new HasMedExamId();
         hasMedExamId.setExamId(examination.getId());
         hasMedExamId.setMedCode(medication.getMcode());
-    
+
         HasMedExam newHasMedExam = new HasMedExam();
         newHasMedExam.setId(hasMedExamId);
         newHasMedExam.setExaminationMedication(examination);
@@ -68,12 +68,32 @@ public class HasMedExamService {
         newHasMedExam.setMedicationQuantity(hasMedExam.getMedicationQuantity());
 
         // update medication quantity
-        medication.setQuantity(medication.getQuantity() - hasMedExam.getMedicationQuantity());
+        if (medication.getQuantity() < hasMedExam.getMedicationQuantity()) {
+            throw new IllegalArgumentException("Medication quantity is not enough");
+        }
 
-        this.medicationRepository.save(medication);
-    
+        if (medication.getStatus() == MedStatus.Out_of_stock) {
+            throw new IllegalArgumentException("Medication is out of stock");
+        }
+
+        else if (medication.getStatus() == MedStatus.Expired) {
+            throw new IllegalArgumentException("Medication is expired");
+        }
+
+        else {
+            int remainingQuantity = medication.getQuantity() - hasMedExam.getMedicationQuantity();
+
+            if (remainingQuantity == 0) {
+                medication.setStatus(MedStatus.Out_of_stock);
+            }
+
+            medication.setQuantity(medication.getQuantity() - hasMedExam.getMedicationQuantity());
+
+            this.medicationRepository.save(medication);
+        }
+
         HasMedExam savedHasMedExam = this.hasMedExamRepository.save(newHasMedExam);
-    
+
         return new HasMedExamDTO(savedHasMedExam);
     }
 

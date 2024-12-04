@@ -1,6 +1,7 @@
 package com.service;
 
 import java.util.Optional;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import com.repository.TreatmentRepository;
 
 import jakarta.transaction.Transactional;
 
+import com.dto.PatientDTO;
 import com.dto.TreatmentDTO;
 import com.exception.NotFoundException;
 
@@ -165,5 +167,38 @@ public class TreatmentService {
         List<Treatment> treatments = this.treatmentRepository.findByInformationId(informations);
 
         return treatments.stream().map(TreatmentDTO::new).toList();
+    }
+
+    // handle get all patient which are treated by a doctor
+    public List<PatientDTO> handleGetAllPatientTreatedByDoctor(long doctorCode) {
+        Employee doctor = this.employeeService.findEmployee(doctorCode);
+        Employee_type Doctor = Employee_type.Doctor;
+
+        if (doctor == null) {
+            throw new NotFoundException("Doctor not found");
+        }
+
+        if (doctor.getEmployeeType() != Doctor) {
+            throw new NotFoundException("Employee is not a doctor");
+        }
+
+        List<Long> treatIds = this.treatmentRepository.findByDocCode(doctorCode);
+        System.out.println(treatIds);
+        List<Long> inforIds = this.hospitalizationInformationRepository.findByTreatmentId(treatIds);
+        System.out.println(inforIds);
+        List<String> patientCodes = this.hospitalizationInformationRepository.findPatientCodeByHosInfoId(inforIds);
+        System.out.println(patientCodes);
+        List<Patients> patients = new ArrayList<>();
+        for (String patientCode : patientCodes) {
+            Patients patient = this.patientService.findPatient(patientCode);
+            
+            if (patient == null) {
+                throw new NotFoundException("Patient not found");
+            }
+
+            patients.add(patient);
+        }
+
+        return patients.stream().map(PatientDTO::new).toList();
     }
 }

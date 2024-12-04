@@ -12,22 +12,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.service.ExaminationService;
 import com.service.PatientService;
 import com.service.TreatmentService;
+import com.dto.ExaminationDTO;
 import com.dto.PatientDTO;
 import com.dto.TreatmentDTO;
 import com.model.Patients;
 
 @RestController
 @RequestMapping("/patient")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class PatientController{
     private final PatientService patientServ;
     private final TreatmentService treatmentService;
+    private final ExaminationService examinationService;
     
-    public PatientController(PatientService patientServ, TreatmentService treatmentService){
+    public PatientController(PatientService patientServ, TreatmentService treatmentService, ExaminationService examinationService){
         this.patientServ = patientServ;
         this.treatmentService = treatmentService;
+        this.examinationService = examinationService;
     }
 
     @GetMapping("/all")
@@ -43,8 +47,8 @@ public class PatientController{
     }
 
     @PostMapping
-    public ResponseEntity<PatientDTO> createPatient(@RequestBody Patients patient){
-        Patients newPatient = patientServ.handleCreatePatient(patient);
+    public ResponseEntity<PatientDTO> createPatient(@RequestBody PatientDTO patientDTO){
+        Patients newPatient = patientServ.handleCreatePatient(patientDTO);
         PatientDTO newPatientDTO = new PatientDTO(newPatient);
         return ResponseEntity.status(HttpStatus.CREATED).body(newPatientDTO);
     }
@@ -55,5 +59,11 @@ public class PatientController{
 
         return ResponseEntity.ok(treatments);
     }
-    
+
+    @GetMapping("/{code}/examination")
+    public ResponseEntity<List<ExaminationDTO>> getAllExaminationOfPatient(@PathVariable String code) {
+        List<ExaminationDTO> examinations = examinationService.handleGetAllExaminationOfPatient(code);
+
+        return ResponseEntity.ok(examinations);
+    }
 }

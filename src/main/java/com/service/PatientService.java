@@ -55,11 +55,11 @@ public class PatientService{
     }
 
     //create new patient
-    public Patients handleCreatePatient(Patients patient){
-        Patients newPatient = patient_repo.save(patient);
+    public Patients handleCreatePatient(PatientDTO patientDTO){
+        Patients newPatient = new Patients();
 
         String patientCode = "";
-        PatientType patientType = newPatient.getPatientType();
+        PatientType patientType = patientDTO.getPatientType();
         PatientCounter patientCounter = this.patientCounterService.findPatientCounter(patientType);
 
         if (patientCounter == null) {
@@ -81,6 +81,13 @@ public class PatientService{
         this.patientCounterRepository.save(patientCounter);
 
         newPatient.setPcode(patientCode);
+        newPatient.setFirstName(patientDTO.getFirstName());
+        newPatient.setLastName(patientDTO.getLastName());
+        newPatient.setAddress(patientDTO.getAddress());
+        newPatient.setDOB(patientDTO.getDob());
+        newPatient.setGender(patientDTO.getGender());
+        newPatient.setPatientType(patientType);
+        newPatient.setPhoneNumber(patientDTO.getPhoneNumber());
 
         return patient_repo.save(newPatient);
     }

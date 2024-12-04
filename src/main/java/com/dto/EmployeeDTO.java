@@ -49,7 +49,9 @@ public class EmployeeDTO {
         // Convert the phone_numbers list to a list of phone numbers (strings)
         if (employee.getPhone_numbers() == null) {
             this.phoneNumbers = null;
-        } else {
+        } 
+        
+        else {
             this.phoneNumbers = employee.getPhone_numbers().stream()
                     .map(phone -> phone.getPhoneNumber())
                     .collect(Collectors.toList());

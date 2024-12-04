@@ -23,7 +23,7 @@ public class Patients{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(columnDefinition = "VARCHAR(11)")
+    @Column(columnDefinition = "VARCHAR(11)", unique = true)
     private String Pcode;
 
     @Column(columnDefinition = "VARCHAR(50)", nullable = false)
@@ -45,6 +45,9 @@ public class Patients{
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PatientType patientType;
+
+    @Column(columnDefinition = "VARCHAR(15)", nullable = true)
+    private String phoneNumber;
 
     @OneToMany(mappedBy = "examinePatient", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Examination> examinations = new HashSet<>();

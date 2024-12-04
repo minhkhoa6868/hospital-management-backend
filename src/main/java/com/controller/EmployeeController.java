@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.dto.EmployeeDTO;
 import com.dto.ExaminationDTO;
 import com.dto.HospitalizationInformationDTO;
+import com.dto.PatientDTO;
 import com.dto.TreatmentDTO;
 import com.model.Employee;
 import com.service.EmployeeService;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/employee")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class EmployeeController {
     private final EmployeeService employeeService;
     private final HospitalizationInformationService hospitalizationInformationService;
@@ -125,5 +126,20 @@ public class EmployeeController {
 
         return ResponseEntity.ok(treatments);
     }
+
+    // get all patient which are treated by doctor
+    @GetMapping("/{code}/treatment/patient")
+    public ResponseEntity<List<PatientDTO>> getAllPatientTreatedByDoctor(@PathVariable long code) {
+        List<PatientDTO> patients = this.treatmentService.handleGetAllPatientTreatedByDoctor(code);
+
+        return ResponseEntity.ok(patients);
+    }
     
+    // get all doctors
+    @GetMapping("/all/doctor")
+    public ResponseEntity<List<EmployeeDTO>> getAllDoctors() {
+        List<EmployeeDTO> doctors = this.employeeService.handleGetAllDoctors();
+
+        return ResponseEntity.ok(doctors);
+    }
 }

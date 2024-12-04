@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.LoginDTO;
+import com.dto.LoginResponse;
 import com.service.UserService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 public class LoginController {
     private final UserService userService;
 
@@ -19,14 +21,13 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    @CrossOrigin(origins = "http://localhost:3000")
-    public ResponseEntity<String> login(@RequestBody LoginDTO loginDto) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginDTO loginDto) {
         boolean success = userService.login(loginDto.getUsername(), loginDto.getPassword());
 
         if (success) {
-            return ResponseEntity.status(HttpStatus.OK).body("Login successful");
+            return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(true, "Login successful"));
         } else {
-            return ResponseEntity.badRequest().body("Invalid username or password");
+            return ResponseEntity.badRequest().body(new LoginResponse(false, "Invalid username or password"));
         }
     }
 }

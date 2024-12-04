@@ -5,6 +5,7 @@ import com.exception.NotFoundException;
 import com.model.Department;
 import com.model.Employee;
 import com.model.Employee_phone;
+import com.model.Employee_type;
 import com.repository.DepartmentRepository;
 import com.repository.EmployeeRepository;
 
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
@@ -27,7 +29,6 @@ public class EmployeeService {
     }
 
     // handle get all employees
-    @Transactional
     public List<EmployeeDTO> handleGetAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
 
@@ -35,7 +36,6 @@ public class EmployeeService {
     }
 
     // find employee
-    @Transactional
     public Employee findEmployee(long code) {
         Optional<Employee> targetEmployee = this.employeeRepository.findByEcode(code);
 
@@ -47,7 +47,6 @@ public class EmployeeService {
     }
 
     // handle get one employee
-    @Transactional
     public EmployeeDTO handleGetOneEmployee(long code) {
         Employee employee = this.findEmployee(code);
 
@@ -59,7 +58,6 @@ public class EmployeeService {
     }
 
     // handle create employee
-    @Transactional
     public Employee handleCreateEmployee(EmployeeDTO employeeDTO) {
         Employee newEmployee = new Employee();
 
@@ -107,7 +105,6 @@ public class EmployeeService {
     }
 
     // handle update employee
-    @Transactional
     public EmployeeDTO handleUpdateEmployee(long code, EmployeeDTO employeeDTO) {
         Employee updatedEmployee = this.findEmployee(code);
 
@@ -164,13 +161,11 @@ public class EmployeeService {
     }
 
     // handle delete all employees
-    @Transactional
     public void handleDeleteAllEmployees() {
         employeeRepository.deleteAll();
     }
 
     // handle delete employee
-    @Transactional
     public void handleDeleteEmployee(long code) {
         Employee employee = this.findEmployee(code);
 
@@ -182,7 +177,6 @@ public class EmployeeService {
     }
 
     // handle get all phone numbers of employee
-    @Transactional
     public List<String> handleGetAllEmployeePhones(long code) {
         Employee employee = this.findEmployee(code);
 
@@ -193,5 +187,12 @@ public class EmployeeService {
         return employee.getPhone_numbers().stream()
                 .map(Employee_phone::getPhoneNumber)
                 .collect(Collectors.toList());
+    }
+
+    // handle get all doctor
+    public List<EmployeeDTO> handleGetAllDoctors() {
+        List<Employee> doctors = employeeRepository.findByEmployeeType(Employee_type.Doctor);
+
+        return doctors.stream().map(EmployeeDTO::new).toList();
     }
 }

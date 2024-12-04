@@ -21,6 +21,9 @@ public class MedicationDTO {
     private MedStatus status;
     private List<String> effects;
 
+    public MedicationDTO() {
+    }
+
     public MedicationDTO(Medication med) {
         this.Mcode = med.getMcode();
         this.name = med.getName();

@@ -19,9 +19,14 @@ public class PatientDTO {
     private LocalDate dob;
     private Gender gender;
     private String address;
-    private PatientType patient_type;
+    private PatientType patientType;
+    private String phoneNumber;
     private List<ExaminationDTO> examinations;
     private List<HospitalizationInformationDTO> hospitalizationInformation;
+
+    public PatientDTO() {
+        // Default constructor for Jackson
+    }    
 
     public PatientDTO(Patients patient) {
         this.pcode = patient.getPcode();
@@ -30,7 +35,8 @@ public class PatientDTO {
         this.dob = patient.getDOB();
         this.gender = patient.getGender();
         this.address = patient.getAddress();
-        this.patient_type = patient.getPatientType();
+        this.patientType = patient.getPatientType();
+        this.phoneNumber = patient.getPhoneNumber();
 
         if (patient.getExaminations() == null) {
             this.examinations = null;
