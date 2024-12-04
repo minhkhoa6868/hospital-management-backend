@@ -1,7 +1,11 @@
 package com.repository;
 
-import com.model.Medication;
+import com.model.Employee;
+import com.model.Employee_type;
 
+import jakarta.transaction.Transactional;
+
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,16 +13,14 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public interface MedicationRepository extends JpaRepository<Medication,Long>{
-    @Query(value = "SELECT * FROM Medication p WHERE p.name = :name", nativeQuery = true)
-    Optional<Medication> findMedicationName(@Param("name") String name);
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+    @Query(value = "SELECT * FROM Employee e WHERE e.ecode = :Ecode", nativeQuery = true)
+    Optional<Employee> findByEcode(@Param("Ecode") long Ecode);
 
-
-    @Query(value = "SELECT * FROM Medication p WHERE p.mcode = :code", nativeQuery = true)
-    Optional<Medication> findMCode(@Param("code") long code);
+    // get all doctor
+    List<Employee> findByEmployeeType(Employee_type employeeType);
 
     @Modifying
     @Transactional

@@ -1,5 +1,9 @@
 package com.service;
 
+import com.model.PatientCounter;
+import com.model.Patients;
+import com.model.Patients.PatientType;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -7,22 +11,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dto.PatientDTO;
+import com.exception.NotFoundException;
+import com.repository.PatientCounterRepository;
 import com.repository.PatientRepository;
 
 @Service
 @Transactional
 public class PatientService{
     private final PatientRepository patient_repo;
+    private final PatientCounterRepository patientCounterRepository;
+    private final PatientCounterService patientCounterService;
 
     //initialize
-    public PatientService(PatientRepository patient_repo){
+    public PatientService(PatientRepository patient_repo, PatientCounterService patientCounterService, PatientCounterRepository patientCounterRepository){
         this.patient_repo = patient_repo;
+        this.patientCounterService = patientCounterService;
+        this.patientCounterRepository = patientCounterRepository;
     }
 
     //find by PCode
-    @Transactional
-    public Patient findPatient(long code){
-        Optional<Patient> targetPatient = this.patient_repo.findPCode(code);
+    public Patients findPatient(String code){
+        Optional<Patients> targetPatient = this.patient_repo.findPCode(code);
 
         if (targetPatient.isPresent()){
             return targetPatient.get();
@@ -30,72 +39,56 @@ public class PatientService{
         return null;
     }
 
-    @Transactional
-    public List<Patient> getAllPatient(Patient patient){
-        List<Patient> patients = patient_repo.findAll();
+    public List<PatientDTO> handleGetAllPatient(){
+        List<Patients> patients = patient_repo.findAll();
 
         return patients.stream().map(PatientDTO::new).toList();
     }
 
-    public PatientDTO getOnePatient(long code){
-        Patient patient = this.findPatient(code);
+    public PatientDTO handleGetOnePatient(String code){
+        Patients patient = this.findPatient(code);
 
         if (patient == null){
-            throw new RuntumeException("Patient not found");
+            return null;
         }
         return new PatientDTO(patient);
     }
 
     //create new patient
-    @Transactional
-    public Patient createPatient(PatientDTO patientDTO){
-        System.out.println(patientDTO);
+    public Patients handleCreatePatient(PatientDTO patientDTO){
+        Patients newPatient = new Patients();
 
-        Patient newPatient = new Patient();
+        String patientCode = "";
+        PatientType patientType = patientDTO.getPatientType();
+        PatientCounter patientCounter = this.patientCounterService.findPatientCounter(patientType);
 
-        this.patient_repo.disableForeignKeyChecks();
-
-        newPatient.setFirstname(patientDTO.getFirstname());
-        newPatient.setLastname(patientDTO.getLastname());
-        newPatient.setdob(patientDTO.getdob());
-        newPatient.setGender(patientDTO.getGender());
-        newPatient.setAddress(patientDTO.getAddress());
-        newPatient.setPatienttype(patientDTO.getPatienttype());
-
-        this.patient_repo.enableForeignKeyChecks();
-        return patient_repo.save(newPatient);
-    }
-
-    //update patient info
-    @Transactional
-    public PatientDTO updatePatient(long code, PatientDTO patientDTO){
-        Patient updated = this.findPatient(code);
-
-        if (updated==null){
-            throw new RuntimeException("Patient not found");
+        if (patientCounter == null) {
+            throw new NotFoundException("Patient type not found");
         }
 
-        updated.setFirstname(patientDTO.getFirstname());
-        updated.setLastname(patientDTO.getLastname());
-        updated.setdob(patientDTO.getdob());
-        updated.setGender(patientDTO.getGender());
-        updated.setAddress(patientDTO.getAddress());
-        updated.setPatienttype(patientDTO.getPatienttype());
-        Patient saved = patient_repo.save(updated);
-        return new PatientDTO(saved);
-    }
+        Long sequence = patientCounter.getCurrentSequence();
 
-    //clear patient list
-    @Transactional
-    public void deleteAllPatients() {
-        patient_repo.deleteAll();
-    }
-    
-    //delete patient
-    @Transactional
-    public void deletePatient(long code){
-        Patient patient = this.findPatient(code);
-        if (patient == null) {throw new RuntimeException("Patient not found");}
-        patient_repo.delete(patient);
+        if (patientType == PatientType.Inpatient){
+            patientCode = "IP" + String.format("%09d", sequence);
+        }
+
+        else if (patientType == PatientType.Outpatient){
+            patientCode = "OP" + String.format("%09d", sequence);
+        }
+
+        sequence = patientCounter.getCurrentSequence() + 1;
+        patientCounter.setCurrentSequence(sequence);
+        this.patientCounterRepository.save(patientCounter);
+
+        newPatient.setPcode(patientCode);
+        newPatient.setFirstName(patientDTO.getFirstName());
+        newPatient.setLastName(patientDTO.getLastName());
+        newPatient.setAddress(patientDTO.getAddress());
+        newPatient.setDOB(patientDTO.getDob());
+        newPatient.setGender(patientDTO.getGender());
+        newPatient.setPatientType(patientType);
+        newPatient.setPhoneNumber(patientDTO.getPhoneNumber());
+
+        return patient_repo.save(newPatient);
     }
 }

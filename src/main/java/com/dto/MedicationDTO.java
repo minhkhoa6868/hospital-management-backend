@@ -1,23 +1,43 @@
 package com.dto;
 
-import main.java.com.model.MedStatus;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.model.Medication;
+import com.model.MedStatus;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-public class MedicationDTO{
-    private Integer MCode;
-    private String Name;
-    private Integer Price;
-    private Integer Quantity;
-    private Date ExpirationDate;
-    private MedStatus Status;
+public class MedicationDTO {
+    private Long Mcode;
+    private String name;
+    private int price;
+    private int quantity;
+    private LocalDate expirationDate;
+    private MedStatus status;
+    private List<String> effects;
 
-    public MedicationDTO(Medicaton med){
-        this.MCode = med.getMCode();
-        this.Name = med.getName();
-        this.Price = med.getPrice();
-        this.Quantity = med.getQuantity;
-        this.ExpirationDate = med.getExpirationDate();
-        this.Status = med.getStatus();
+    public MedicationDTO() {
     }
-}   
+
+    public MedicationDTO(Medication med) {
+        this.Mcode = med.getMcode();
+        this.name = med.getName();
+        this.price = med.getPrice();
+        this.quantity = med.getQuantity();
+        this.expirationDate = med.getExpirationDate();
+        this.status = med.getStatus();
+
+        if (med.getEffects() == null) {
+            this.effects = null;
+        }
+
+        else {
+            this.effects = med.getEffects().stream().map(effect -> effect.getEffect()).collect(Collectors.toList());
+        }
+    }
+}

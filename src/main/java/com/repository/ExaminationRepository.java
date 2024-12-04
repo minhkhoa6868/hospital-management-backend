@@ -1,24 +1,26 @@
 package com.repository;
 
-import com.model.Medication;
-
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
+import com.model.Examination;
+
+import jakarta.transaction.Transactional;
 
 @Repository
-public interface MedicationRepository extends JpaRepository<Medication,Long>{
-    @Query(value = "SELECT * FROM Medication p WHERE p.name = :name", nativeQuery = true)
-    Optional<Medication> findMedicationName(@Param("name") String name);
+public interface ExaminationRepository extends JpaRepository<Examination, Long> {
+    Optional<Examination> findById(long id);
 
+    @Query(value = "SELECT * FROM Examination e WHERE e.doc_code = :doctorCode", nativeQuery = true)
+    List<Examination> findByDoctorCode(long doctorCode);
 
-    @Query(value = "SELECT * FROM Medication p WHERE p.mcode = :code", nativeQuery = true)
-    Optional<Medication> findMCode(@Param("code") long code);
+    @Query(value = "SELECT * FROM Examination e WHERE e.op_code = :patientCode", nativeQuery = true)
+    List<Examination> findByPatientCode(String patientCode);
 
     @Modifying
     @Transactional

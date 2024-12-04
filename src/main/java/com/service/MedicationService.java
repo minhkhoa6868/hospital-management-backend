@@ -1,5 +1,8 @@
 package com.service;
 
+import com.model.Medication;
+import com.model.Medication_effect;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +24,7 @@ public class MedicationService{
 
     //find by MCode
     @Transactional
-    public Medication findMedication(integer code){
+    public Medication findMedication(long code){
         Optional<Medication> targetMedication = this.medRepo.findMCode(code);
 
         if (targetMedication.isPresent()){
@@ -31,69 +34,49 @@ public class MedicationService{
     }
 
     @Transactional
-    public List<Medication> getAllMedication(Medication Medication){
+    public List<MedicationDTO> handleGetAllMedication(){
         List<Medication> Medications = medRepo.findAll();
 
         return Medications.stream().map(MedicationDTO::new).toList();
     }
 
-    public MedicationDTO getOneMedication(integer code){
+    public MedicationDTO getOneMedication(long code){
         Medication Medication = this.findMedication(code);
 
         if (Medication == null){
-            throw new RuntumeException("Medication not found");
+            return null;
         }
         return new MedicationDTO(Medication);
     }
 
     //create new Medication
     @Transactional
-    public Medication createMedication(MedicationDTO MedicationDTO){
-        System.out.println(MedicationDTO);
-
+    public Medication createMedication(MedicationDTO medicationDTO){
         Medication newMedication = new Medication();
 
         this.medRepo.disableForeignKeyChecks();
 
-        newMedication.setName(MedicationDTO.getName());
-        newMedication.setPrice(MedicationDTO.getPrice());
-        newMedication.setQuantity(MedicationDTO.getQuantity());
-        newMedication.setExpirationDate(MedicationDTO.getExpirationDate());
-        newMedication.setMedStatus(MedicationDTO.getMedStatus());
+        newMedication.setName(medicationDTO.getName());
+        newMedication.setPrice(medicationDTO.getPrice());
+        newMedication.setQuantity(medicationDTO.getQuantity());
+        newMedication.setExpirationDate(medicationDTO.getExpirationDate());
+        newMedication.setStatus(medicationDTO.getStatus());
 
-        this.medRepo.enableForeignKeyChecks();
-        return medRepo.save(newMedication);
-    }
-
-    //update Medication info
-    @Transactional
-    public MedicationDTO updateMedication(integer code, MedicationDTO MedicationDTO){
-        Medication updated = this.findMedication(code);
-
-        if (updated==null){
-            throw new RuntimeException("Medication not found");
+        // handle create phone number
+        if (medicationDTO.getEffects() != null && !medicationDTO.getEffects().isEmpty()) {
+            for (String effect : medicationDTO.getEffects()) {
+                // Avoid duplicates or null values
+                if (effect != null && !effect.trim().isEmpty()) {
+                    Medication_effect newEffect = new Medication_effect();
+                    newEffect.setEffect(effect.trim());
+                    newEffect.setMedication(newMedication); // Establish relationship
+                    newMedication.getEffects().add(newEffect); // Add to medication
+                }
+            }
         }
 
-        updated.setName(MedicationDTO.getName());
-        updated.setPrice(MedicationDTO.getPrice());
-        updated.setQuantity(MedicationDTO.getQuantity());
-        updated.setExpirationDate(MedicationDTO.getExpirationDate());
-        updated.setMedStatus(MedicationDTO.getMedStatus());
-        Medication saved = medRepo.save(updated);
-        return new MedicationDTO(saved);
-    }
+        this.medRepo.enableForeignKeyChecks();
 
-    //clear Medication list
-    @Transactional
-    public void deleteAllMedications() {
-        medRepo.deleteAll();
-    }
-    
-    //delete Medication
-    @Transactional
-    public void deleteMedication(integer code){
-        Medication Medication = this.findMedication(code);
-        if (Medication == null) {throw new RuntimeException("Medication not found");}
-        medRepo.delete(Medication);
+        return medRepo.save(newMedication);
     }
 }
