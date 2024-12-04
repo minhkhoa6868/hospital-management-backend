@@ -10,8 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TreatmentDTO {
+    private Long id;
     private String result;
-    private LocalDate starDate;
+    private LocalDate startDate;
     private LocalDate endDate;
     private Long doctorCode;
     private String doctorName;
@@ -27,9 +28,13 @@ public class TreatmentDTO {
     private String patientName;
     private String medicationName;
 
+    public TreatmentDTO() {
+    }
+
     public TreatmentDTO(Treatment treatment) {
+        this.id = treatment.getId();
         this.result = treatment.getResult();
-        this.starDate = treatment.getStartDate();
+        this.startDate = treatment.getStartDate();
         this.endDate = treatment.getEndDate();
         if (treatment.getTreatDoctor() == null) {
             this.doctorCode = null;
@@ -38,8 +43,8 @@ public class TreatmentDTO {
 
         else {
             this.doctorCode = treatment.getTreatDoctor().getEcode();
-            this.doctorName = treatment.getTreatDoctor().getFirstName() + " "
-                    + treatment.getTreatDoctor().getLastName();
+            this.doctorName = treatment.getTreatDoctor().getLastName() + " "
+                    + treatment.getTreatDoctor().getFirstName();
         }
 
         if (treatment.getTreatInformation() == null) {
@@ -67,8 +72,8 @@ public class TreatmentDTO {
 
         else {
             this.takeCareNurseCode = treatment.getTreatInformation().getTakeCareNurse().getEcode();
-            this.takeCareNurseName = treatment.getTreatInformation().getTakeCareNurse().getFirstName() + " "
-                    + treatment.getTreatInformation().getTakeCareNurse().getLastName();
+            this.takeCareNurseName = treatment.getTreatInformation().getTakeCareNurse().getLastName() + " "
+                    + treatment.getTreatInformation().getTakeCareNurse().getFirstName();
         }
 
         if (treatment.getTreatInformation().getTakeCarePatient() == null) {
@@ -78,8 +83,8 @@ public class TreatmentDTO {
 
         else {
             this.patientCode = treatment.getTreatInformation().getTakeCarePatient().getPcode();
-            this.patientName = treatment.getTreatInformation().getTakeCarePatient().getFirstName() + " "
-                    + treatment.getTreatInformation().getTakeCarePatient().getLastName();
+            this.patientName = treatment.getTreatInformation().getTakeCarePatient().getLastName() + " "
+                    + treatment.getTreatInformation().getTakeCarePatient().getFirstName();
         }
 
         if (treatment.getHasMedTreatments() == null) {

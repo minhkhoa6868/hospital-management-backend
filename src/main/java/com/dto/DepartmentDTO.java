@@ -1,8 +1,5 @@
 package com.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.model.Department;
 
 import lombok.Getter;
@@ -11,28 +8,24 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DepartmentDTO {
+    private Long dcode;
     private String title;
-    private EmployeeDTO dean;
-    private List<EmployeeDTO> employees;
+    private String deanName;
+    private Integer numberOfEmployee;
+
+    public DepartmentDTO() {}
 
     public DepartmentDTO(Department department) {
+        this.dcode = department.getDcode();
         this.title = department.getTitle();
 
         if (department.getDean() == null) {
-            this.dean = null;
+            this.deanName = null;
         }
         else {
-            this.dean = new EmployeeDTO(department.getDean());
+            this.deanName = department.getDean().getLastName() + " " + department.getDean().getFirstName();
         }
 
-        if (department.getEmployees() == null) {
-            this.employees = null;
-        }
-
-        else {
-            this.employees = department.getEmployees().stream()
-                            .map(EmployeeDTO::new)
-                            .collect(Collectors.toList());
-        }
+        this.numberOfEmployee = department.getEmployees().size();
     }
 }

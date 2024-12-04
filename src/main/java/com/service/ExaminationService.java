@@ -129,4 +129,22 @@ public class ExaminationService {
 
         return examinations.stream().map(ExaminationDTO::new).toList();
     }
+
+    // handle get all examination of patient
+    public List<ExaminationDTO> handleGetAllExaminationOfPatient(String patientCode) {
+        Patients patient = this.patientService.findPatient(patientCode);
+        PatientType Outpatient = PatientType.Outpatient;
+
+        if (patient == null) {
+            throw new NotFoundException("Patient not found");
+        }
+
+        if (patient.getPatientType() != Outpatient) {
+            throw new NotFoundException("Patient is not an outpatient");
+        }
+
+        List<Examination> examinations = this.examinationRepository.findByPatientCode(patientCode);
+
+        return examinations.stream().map(ExaminationDTO::new).toList();
+    }
 }

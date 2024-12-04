@@ -19,11 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
 @RestController
 @RequestMapping("/treatment")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class TreatmentController {
     private final TreatmentService treatmentService;
     private final HasMedTreatmentService hasMedTreatmentService;

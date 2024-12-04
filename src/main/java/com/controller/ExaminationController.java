@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/examination")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ExaminationController {
     private final ExaminationService examinationService;
     private final HasMedExamService hasMedExamService;

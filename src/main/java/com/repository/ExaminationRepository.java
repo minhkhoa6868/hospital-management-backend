@@ -20,7 +20,7 @@ public interface ExaminationRepository extends JpaRepository<Examination, Long> 
     List<Examination> findByDoctorCode(long doctorCode);
 
     @Query(value = "SELECT * FROM Examination e WHERE e.op_code = :patientCode", nativeQuery = true)
-    List<Examination> findByPatientCode(long patientCode);
+    List<Examination> findByPatientCode(String patientCode);
 
     @Modifying
     @Transactional

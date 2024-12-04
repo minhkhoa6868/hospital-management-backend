@@ -19,7 +19,7 @@ import com.service.MedicationService;
 
 @RestController
 @RequestMapping("/medication")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class MedicationController{
     private final MedicationService MedicationServ;
     

@@ -22,6 +22,9 @@ public interface TreatmentRepository extends JpaRepository<Treatment, Long> {
 
     @Query(value = "SELECT * FROM Treatment t WHERE t.hos_info_id IN (:informationIds)", nativeQuery = true)
     List<Treatment> findByInformationId(@Param("informationIds") List<Long> informationIds);
+    
+    @Query(value = "SELECT t.id FROM Treatment t WHERE t.doc_code IN (:doctorCode)", nativeQuery = true)
+    List<Long> findByDocCode(long doctorCode);
 
     @Modifying
     @Transactional

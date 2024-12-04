@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ExaminationDTO {
+    private Long id;
     private LocalDate date;
     private LocalDate nextDate;
     private int fee;
@@ -20,7 +21,10 @@ public class ExaminationDTO {
     private String patientName;
     private String medicationName;
 
+    public ExaminationDTO() {}
+
     public ExaminationDTO(Examination examination) {
+        this.id = examination.getId();
         this.date = examination.getDate();
         this.nextDate = examination.getNextDate();
         this.fee = examination.getFee();
@@ -32,8 +36,8 @@ public class ExaminationDTO {
 
         else {
             this.doctorCode = examination.getExamineDoctor().getEcode();
-            this.doctorName = examination.getExamineDoctor().getFirstName() + " "
-                    + examination.getExamineDoctor().getLastName();
+            this.doctorName = examination.getExamineDoctor().getLastName() + " "
+                    + examination.getExamineDoctor().getFirstName();
         }
 
         if (examination.getExaminePatient() == null) {
@@ -43,8 +47,8 @@ public class ExaminationDTO {
 
         else {
             this.patientCode = examination.getExaminePatient().getPcode();
-            this.patientName = examination.getExaminePatient().getFirstName() + " "
-                    + examination.getExaminePatient().getLastName();
+            this.patientName = examination.getExaminePatient().getLastName() + " "
+                    + examination.getExaminePatient().getFirstName();
         }
 
         if (examination.getHasMedExams() == null) {

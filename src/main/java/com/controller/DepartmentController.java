@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/department")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class DepartmentController {
     private final DepartmentService departmentService;
 

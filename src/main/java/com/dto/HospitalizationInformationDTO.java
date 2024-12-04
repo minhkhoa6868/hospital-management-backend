@@ -37,7 +37,7 @@ public class HospitalizationInformationDTO {
 
         else {
             this.nurseCode = hi.getTakeCareNurse().getEcode();
-            this.nurseName = hi.getTakeCareNurse().getFirstName() + " " + hi.getTakeCareNurse().getLastName();
+            this.nurseName = hi.getTakeCareNurse().getLastName() + " " + hi.getTakeCareNurse().getFirstName();
         }
 
         if (hi.getTakeCarePatient() == null) {
@@ -47,7 +47,7 @@ public class HospitalizationInformationDTO {
 
         else {
             this.patientCode = hi.getTakeCarePatient().getPcode();
-            this.patientName = hi.getTakeCarePatient().getFirstName() + " " + hi.getTakeCarePatient().getLastName();
+            this.patientName = hi.getTakeCarePatient().getLastName() + " " + hi.getTakeCarePatient().getFirstName();
         }
 
         if (hi.getTreatments() == null) {

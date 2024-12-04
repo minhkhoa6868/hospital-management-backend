@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Medication_effect", uniqueConstraints = @UniqueConstraint(columnNames = {"Med_code", "effect"}))
+@Table(name = "Medication_effect", uniqueConstraints = @UniqueConstraint(columnNames = {"Med_code"}))
 @Getter
 @Setter
 public class Medication_effect {
