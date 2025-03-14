@@ -41,15 +41,15 @@ public class Employee {
     @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String speName;
 
-    @Column(columnDefinition = "YEAR", nullable = false)
+    @Column(columnDefinition = "INTEGER", nullable = false)
     private long speDegreeYear;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Employee_type employeeType;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Employee_phone> phone_numbers = new HashSet<>();
+    @Column(columnDefinition = "VARCHAR(10)", nullable = false)
+    private String phone_number;
 
     @ManyToOne
     @JoinColumn(name = "Dno", referencedColumnName = "Dcode", nullable = true)

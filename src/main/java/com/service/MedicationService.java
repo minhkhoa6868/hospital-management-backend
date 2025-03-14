@@ -54,8 +54,6 @@ public class MedicationService{
     public Medication createMedication(MedicationDTO medicationDTO){
         Medication newMedication = new Medication();
 
-        this.medRepo.disableForeignKeyChecks();
-
         newMedication.setName(medicationDTO.getName());
         newMedication.setPrice(medicationDTO.getPrice());
         newMedication.setQuantity(medicationDTO.getQuantity());
@@ -75,7 +73,9 @@ public class MedicationService{
             }
         }
 
-        this.medRepo.enableForeignKeyChecks();
+        else {
+            newMedication.setEffects(null);
+        }
 
         return medRepo.save(newMedication);
     }

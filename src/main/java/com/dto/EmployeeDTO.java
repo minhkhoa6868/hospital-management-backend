@@ -22,9 +22,9 @@ public class EmployeeDTO {
     private LocalDate startDate;
     private String address;
     private String speName;
-    private long speDegreeYear;
+    private Long speDegreeYear;
     private Employee_type employeeType;
-    private List<String> phoneNumbers;
+    private String phoneNumber;
     private String deptTitle;
     private List<ExaminationDTO> examinations;
     private List<HospitalizationInformationDTO> hospitalizationInformations;
@@ -45,17 +45,8 @@ public class EmployeeDTO {
         this.speName = employee.getSpeName();
         this.speDegreeYear = employee.getSpeDegreeYear();
         this.employeeType = employee.getEmployeeType();
+        this.phoneNumber = employee.getPhone_number();
 
-        // Convert the phone_numbers list to a list of phone numbers (strings)
-        if (employee.getPhone_numbers() == null) {
-            this.phoneNumbers = null;
-        } 
-        
-        else {
-            this.phoneNumbers = employee.getPhone_numbers().stream()
-                    .map(phone -> phone.getPhoneNumber())
-                    .collect(Collectors.toList());
-        }
         if (employee.getDepartment() == null) {
             this.deptTitle = null;
         }

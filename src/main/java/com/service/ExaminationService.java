@@ -68,7 +68,7 @@ public class ExaminationService {
         newExamination.setNextDate(examination.getNextDate());
 
         if (examination.getExamineDoctor() == null) {
-            this.examinationRepository.disableForeignKeyChecks();
+            newExamination.setExamineDoctor(null);
         }
 
         else {
@@ -87,7 +87,7 @@ public class ExaminationService {
         }
 
         if (examination.getExaminePatient() == null) {
-            this.examinationRepository.disableForeignKeyChecks();
+            newExamination.setExaminePatient(null);
         }
 
         else {
@@ -104,8 +104,6 @@ public class ExaminationService {
 
             newExamination.setExaminePatient(patient);
         }
-
-        this.examinationRepository.enableForeignKeyChecks();
 
         Examination savedExamination = this.examinationRepository.save(newExamination);
 

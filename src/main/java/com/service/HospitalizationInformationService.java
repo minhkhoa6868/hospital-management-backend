@@ -72,9 +72,8 @@ public class HospitalizationInformationService {
         newInformation.setSickroom(hospitalizationInformation.getSickroom());
 
         if (hospitalizationInformation.getTakeCareNurse() == null) {
-            this.hospitalizationInformationRepository.disableForeignKeyChecks();
+            newInformation.setTakeCareNurse(null);
         }
-
         else {
             Employee nurse = this.employeeService
                     .findEmployee(hospitalizationInformation.getTakeCareNurse().getEcode());
@@ -92,7 +91,7 @@ public class HospitalizationInformationService {
         }
 
         if (hospitalizationInformation.getTakeCarePatient() == null) {
-            this.hospitalizationInformationRepository.disableForeignKeyChecks();
+            newInformation.setTakeCarePatient(null);
         }
 
         else {
@@ -109,8 +108,6 @@ public class HospitalizationInformationService {
 
             newInformation.setTakeCarePatient(patient);
         }
-
-        this.hospitalizationInformationRepository.enableForeignKeyChecks();
 
         HospitalizationInformation savedInformation = this.hospitalizationInformationRepository
                 .save(newInformation);

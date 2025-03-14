@@ -4,15 +4,12 @@ import com.dto.EmployeeDTO;
 import com.exception.NotFoundException;
 import com.model.Department;
 import com.model.Employee;
-import com.model.Employee_phone;
 import com.model.Employee_type;
 import com.repository.DepartmentRepository;
 import com.repository.EmployeeRepository;
 
 import java.util.List;
-import java.util.Set;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,8 +58,6 @@ public class EmployeeService {
     public Employee handleCreateEmployee(EmployeeDTO employeeDTO) {
         Employee newEmployee = new Employee();
 
-        this.employeeRepository.disableForeignKeyChecks();
-
         newEmployee.setFirstName(employeeDTO.getFirstName());
         newEmployee.setLastName(employeeDTO.getLastName());
         newEmployee.setDOB(employeeDTO.getDOB());
@@ -72,19 +67,7 @@ public class EmployeeService {
         newEmployee.setSpeName(employeeDTO.getSpeName());
         newEmployee.setSpeDegreeYear(employeeDTO.getSpeDegreeYear());
         newEmployee.setEmployeeType(employeeDTO.getEmployeeType());
-
-        // handle create phone number
-        if (employeeDTO.getPhoneNumbers() != null && !employeeDTO.getPhoneNumbers().isEmpty()) {
-            for (String phoneNumber : employeeDTO.getPhoneNumbers()) {
-                // Avoid duplicates or null values
-                if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
-                    Employee_phone phone = new Employee_phone();
-                    phone.setPhoneNumber(phoneNumber.trim());
-                    phone.setEmployee(newEmployee); // Establish relationship
-                    newEmployee.getPhone_numbers().add(phone); // Add to employee
-                }
-            }
-        }
+        newEmployee.setPhone_number(employeeDTO.getPhoneNumber());
 
         // handle reference to department
         if (employeeDTO.getDeptTitle() != null && !employeeDTO.getDeptTitle().isEmpty()) {
@@ -99,7 +82,9 @@ public class EmployeeService {
             }
         }
 
-        this.employeeRepository.enableForeignKeyChecks();
+        else {
+            newEmployee.setDepartment(null);
+        }
 
         return employeeRepository.save(newEmployee);
     }
@@ -120,27 +105,7 @@ public class EmployeeService {
         updatedEmployee.setSpeName(employeeDTO.getSpeName());
         updatedEmployee.setSpeDegreeYear(employeeDTO.getSpeDegreeYear());
         updatedEmployee.setEmployeeType(employeeDTO.getEmployeeType());
-
-        // Handle phone numbers
-        // Step 1: Remove existing phone numbers explicitly
-        Set<Employee_phone> existingPhones = updatedEmployee.getPhone_numbers();
-        if (existingPhones != null) {
-            existingPhones.forEach(phone -> phone.setEmployee(null)); // Break relationship
-            existingPhones.clear();
-        }
-
-        // Step 2: Add new phone numbers from DTO
-        if (employeeDTO.getPhoneNumbers() != null && !employeeDTO.getPhoneNumbers().isEmpty()) {
-            for (String phoneNumber : employeeDTO.getPhoneNumbers()) {
-                // Avoid duplicates or null values
-                if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
-                    Employee_phone phone = new Employee_phone();
-                    phone.setPhoneNumber(phoneNumber.trim());
-                    phone.setEmployee(updatedEmployee); // Establish relationship
-                    updatedEmployee.getPhone_numbers().add(phone); // Add to employee
-                }
-            }
-        }
+        updatedEmployee.setPhone_number(employeeDTO.getPhoneNumber());
 
         // handle reference to department
         if (employeeDTO.getDeptTitle() != null && !employeeDTO.getDeptTitle().isEmpty()) {
@@ -153,6 +118,10 @@ public class EmployeeService {
             else {
                 throw new NotFoundException("Department not found");
             }
+        }
+
+        else {
+            updatedEmployee.setDepartment(null);
         }
 
         Employee savedEmployee = employeeRepository.save(updatedEmployee);
@@ -174,19 +143,6 @@ public class EmployeeService {
         }
 
         employeeRepository.delete(employee);
-    }
-
-    // handle get all phone numbers of employee
-    public List<String> handleGetAllEmployeePhones(long code) {
-        Employee employee = this.findEmployee(code);
-
-        if (employee == null) {
-            throw new NotFoundException("Employee not found");
-        }
-
-        return employee.getPhone_numbers().stream()
-                .map(Employee_phone::getPhoneNumber)
-                .collect(Collectors.toList());
     }
 
     // handle get all doctor

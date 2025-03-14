@@ -95,14 +95,6 @@ public class EmployeeController {
         return ResponseEntity.ok("Employee deleted successfully");
     }
 
-    // handle get all employee phone numbers
-    @GetMapping("/{code}/phone")
-    public ResponseEntity<List<String>> getAllEmployeePhoneNumbers(@PathVariable long code) {
-        List<String> phoneNumbers = employeeService.handleGetAllEmployeePhones(code);
-
-        return ResponseEntity.ok(phoneNumbers);
-    }
-
     // get all hospitalization information of nurse
     @GetMapping("/{code}/hospitalization_information")
     public ResponseEntity<List<HospitalizationInformationDTO>> getAllHospitalizationInformationOfNurse(@PathVariable long code) {

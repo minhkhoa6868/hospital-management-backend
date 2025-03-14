@@ -16,9 +16,4 @@ import com.model.HasMedExam.HasMedExamId;
 public interface HasMedExamRepository extends JpaRepository<HasMedExam, HasMedExamId> {
     @Query("SELECT h.medicationExamination FROM HasMedExam h WHERE h.examinationMedication.id = :examId")
     List<Medication> findMedicationsByExamId(@Param("examId") long examId);
-
-
-
-//     @Query(value = "SELECT * FROM Has_Med_Exam h WHERE h.medCode = :medCode", nativeQuery = true)
-//     List<Examination> findByMedCode(@Param("medCode") long medCode);
 }

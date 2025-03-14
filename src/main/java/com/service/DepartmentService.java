@@ -65,21 +65,18 @@ public class DepartmentService {
 
         newDepartment.setTitle(department.getTitle());
 
-        if (department.getDean() == null) {
-            this.departmentRepository.disableForeignKeyChecks();
-        }
-
-        else {
+        if (department.getDean() != null) {
             Employee dean = this.employeeService.findEmployee(department.getDean().getEcode());
-
             if (dean == null) {
                 throw new NotFoundException("Dean not found");
             }
-
             newDepartment.setDean(dean);
+        } else {
+            // No dean assigned. Optional, no need to disable FK constraints.
+            newDepartment.setDean(null);
         }
 
-        this.departmentRepository.enableForeignKeyChecks();
+        //this.departmentRepository.enableForeignKeyChecks();
 
         Department savedDepartment = departmentRepository.save(newDepartment);
 

@@ -79,7 +79,7 @@ public class TreatmentService {
         newTreatment.setEndDate(treatment.getEndDate());
 
         if (treatment.getTreatDoctor() == null) {
-            this.treatmentRepository.disableForeignKeyChecks();
+            newTreatment.setTreatDoctor(null);
         } 
 
         else {
@@ -98,7 +98,7 @@ public class TreatmentService {
         }
 
         if (treatment.getTreatInformation() == null) {
-            this.treatmentRepository.disableForeignKeyChecks();
+            newTreatment.setTreatInformation(null);
         }
 
         else {
@@ -110,8 +110,6 @@ public class TreatmentService {
 
             newTreatment.setTreatInformation(hospitalizationInformation);
         }
-
-        this.treatmentRepository.enableForeignKeyChecks();
 
         Treatment savedTreatment = treatmentRepository.save(newTreatment);
 
